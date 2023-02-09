@@ -10,18 +10,15 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class User extends BaseEntity {
+public class Project extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
-    private String email;
-    private String password;
-    private String nickname;
-    private String socialType;
-    private String socialId;
-    private String refreshToken;
+    private String title;
+    private String language;
+    private boolean isBookmarked;
 
 }
