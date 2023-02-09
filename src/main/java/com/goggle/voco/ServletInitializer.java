@@ -1,4 +1,4 @@
-package org.zerock.voco;
+package com.goggle.voco;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;

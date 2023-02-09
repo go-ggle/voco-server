@@ -1,4 +1,4 @@
-package org.zerock.voco;
+package com.goggle.voco;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

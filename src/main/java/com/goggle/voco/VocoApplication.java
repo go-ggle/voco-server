@@ -1,4 +1,4 @@
-package org.zerock.voco;
+package com.goggle.voco;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
