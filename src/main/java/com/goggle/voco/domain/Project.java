@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@ToString(exclude = "user")
 public class Project extends BaseEntity{
 
     @Id
@@ -20,5 +20,8 @@ public class Project extends BaseEntity{
     private String title;
     private String language;
     private boolean isBookmarked;
+
+    @ManyToOne
+    private User user;
 
 }
