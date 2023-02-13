@@ -28,15 +28,15 @@ public class ProjectController {
     }
 
     @GetMapping("")
-    public ResponseEntity<ProjectsResponseDTO> getProjectList() {
-        ProjectsResponseDTO projectsResponseDTO = projectService.getProjectList();
+    public ResponseEntity<ProjectsResponseDTO> findProjects() {
+        ProjectsResponseDTO projectsResponseDTO = projectService.findProjects();
 
         return new ResponseEntity<>(projectsResponseDTO, HttpStatus.OK);
     }
 
     @GetMapping("/{projectId}")
-    public ResponseEntity<ProjectResponseDTO> getProjectById(@PathVariable("projectId") Long projectId) {
-        ProjectResponseDTO projectResponseDTO = projectService.getProjectById(projectId);
+    public ResponseEntity<ProjectResponseDTO> findProjectById(@PathVariable("projectId") Long projectId) {
+        ProjectResponseDTO projectResponseDTO = projectService.findProjectById(projectId);
 
         return new ResponseEntity<>(projectResponseDTO, HttpStatus.OK);
     }

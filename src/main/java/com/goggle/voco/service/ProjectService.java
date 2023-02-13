@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface ProjectService {
     ProjectResponseDTO createProject(ProjectRequestDTO projectRequestDTO);
-    ProjectsResponseDTO getProjectList();
-    ProjectResponseDTO getProjectById(Long projectId);
+    ProjectsResponseDTO findProjects();
+    ProjectResponseDTO findProjectById(Long projectId);
 }

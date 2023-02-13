@@ -29,7 +29,7 @@ public class ProjectServiceImpl implements ProjectService{
     }
 
     @Override
-    public ProjectsResponseDTO getProjectList() {
+    public ProjectsResponseDTO findProjects() {
         List<Project> projects = projectRepository.findAll();
         List<ProjectResponseDTO> projectResponseDTOS = projects.stream()
                 .map(project -> ProjectResponseDTO.getProjectResponseDTO(project))
@@ -39,7 +39,7 @@ public class ProjectServiceImpl implements ProjectService{
     }
 
     @Override
-    public ProjectResponseDTO getProjectById(Long projectId) {
+    public ProjectResponseDTO findProjectById(Long projectId) {
         Optional<Project> project = projectRepository.findById(projectId);
 
         if (project.isPresent()) {
