@@ -1,6 +1,7 @@
 package com.goggle.voco.service;
 
 import com.goggle.voco.domain.Project;
+import com.goggle.voco.dto.ProjectRequestDTO;
 import com.goggle.voco.dto.ProjectResponseDTO;
 import com.goggle.voco.dto.ProjectsResponseDTO;
 import com.goggle.voco.repository.ProjectRepository;
@@ -20,8 +21,11 @@ public class ProjectServiceImpl implements ProjectService{
     private final ProjectRepository projectRepository;
 
     @Override
-    public ProjectResponseDTO createProject(ProjectResponseDTO projectDTO) {
-        return null;
+    public ProjectResponseDTO createProject(ProjectRequestDTO projectRequestDTO) {
+        Project project = new Project(projectRequestDTO.getLanguage(), projectRequestDTO.getTitle());
+        projectRepository.save(project);
+
+        return ProjectResponseDTO.getProjectResponseDTO(project);
     }
 
     @Override
