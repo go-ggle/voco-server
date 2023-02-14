@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProjectsResponseDTO {
+public class ProjectsResponseDto {
 
-    private List<ProjectResponseDTO> projects;
+    private List<ProjectResponseDto> projects;
 }

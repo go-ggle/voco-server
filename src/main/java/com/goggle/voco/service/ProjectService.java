@@ -1,13 +1,11 @@
 package com.goggle.voco.service;
 
-import com.goggle.voco.dto.ProjectRequestDTO;
-import com.goggle.voco.dto.ProjectResponseDTO;
-import com.goggle.voco.dto.ProjectsResponseDTO;
-
-import java.util.List;
+import com.goggle.voco.dto.ProjectRequestDto;
+import com.goggle.voco.dto.ProjectResponseDto;
+import com.goggle.voco.dto.ProjectsResponseDto;
 
 public interface ProjectService {
-    ProjectResponseDTO createProject(ProjectRequestDTO projectRequestDTO);
-    ProjectsResponseDTO findProjects();
-    ProjectResponseDTO findProjectById(Long projectId);
+    ProjectResponseDto createProject(ProjectRequestDto projectRequestDTO);
+    ProjectsResponseDto findProjects();
+    ProjectResponseDto findProjectById(Long projectId);
 }

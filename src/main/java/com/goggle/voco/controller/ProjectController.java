@@ -1,8 +1,8 @@
 package com.goggle.voco.controller;
 
-import com.goggle.voco.dto.ProjectRequestDTO;
-import com.goggle.voco.dto.ProjectResponseDTO;
-import com.goggle.voco.dto.ProjectsResponseDTO;
+import com.goggle.voco.dto.ProjectRequestDto;
+import com.goggle.voco.dto.ProjectResponseDto;
+import com.goggle.voco.dto.ProjectsResponseDto;
 import com.goggle.voco.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -21,23 +21,23 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @PostMapping("")
-    public ResponseEntity<ProjectResponseDTO> createProject(@RequestBody ProjectRequestDTO projectRequestDTO) {
-        ProjectResponseDTO projectResponseDTO = projectService.createProject(projectRequestDTO);
+    public ResponseEntity<ProjectResponseDto> createProject(@RequestBody ProjectRequestDto projectRequestDto) {
+        ProjectResponseDto projectResponseDto = projectService.createProject(projectRequestDto);
 
-        return new ResponseEntity<>(projectResponseDTO, HttpStatus.CREATED);
+        return new ResponseEntity<>(projectResponseDto, HttpStatus.CREATED);
     }
 
     @GetMapping("")
-    public ResponseEntity<ProjectsResponseDTO> findProjects() {
-        ProjectsResponseDTO projectsResponseDTO = projectService.findProjects();
+    public ResponseEntity<ProjectsResponseDto> findProjects() {
+        ProjectsResponseDto projectsResponseDto = projectService.findProjects();
 
-        return new ResponseEntity<>(projectsResponseDTO, HttpStatus.OK);
+        return new ResponseEntity<>(projectsResponseDto, HttpStatus.OK);
     }
 
     @GetMapping("/{projectId}")
-    public ResponseEntity<ProjectResponseDTO> findProjectById(@PathVariable("projectId") Long projectId) {
-        ProjectResponseDTO projectResponseDTO = projectService.findProjectById(projectId);
+    public ResponseEntity<ProjectResponseDto> findProjectById(@PathVariable("projectId") Long projectId) {
+        ProjectResponseDto projectResponseDto = projectService.findProjectById(projectId);
 
-        return new ResponseEntity<>(projectResponseDTO, HttpStatus.OK);
+        return new ResponseEntity<>(projectResponseDto, HttpStatus.OK);
     }
 }

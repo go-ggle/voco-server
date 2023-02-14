@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProjectRequestDTO {
+public class ProjectRequestDto {
 
     private String title;
     private String language;

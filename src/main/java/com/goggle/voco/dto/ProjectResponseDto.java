@@ -12,15 +12,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class ProjectResponseDTO {
+public class ProjectResponseDto {
 
     private Long id;
     private String title;
     private String language;
     private LocalDateTime createdAt, updatedAt;
 
-    public static ProjectResponseDTO getProjectResponseDTO(Project project) {
-        return new ProjectResponseDTO(
+    public static ProjectResponseDto from(Project project) {
+        return new ProjectResponseDto(
                 project.getId(),
                 project.getTitle(),
                 project.getLanguage(),
