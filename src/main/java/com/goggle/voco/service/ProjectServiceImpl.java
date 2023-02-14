@@ -21,8 +21,8 @@ public class ProjectServiceImpl implements ProjectService{
     private final ProjectRepository projectRepository;
 
     @Override
-    public ProjectResponseDto createProject(ProjectRequestDto projectRequestDTO) {
-        Project project = new Project(projectRequestDTO.getLanguage(), projectRequestDTO.getTitle());
+    public ProjectResponseDto createProject(ProjectRequestDto projectRequestDto) {
+        Project project = new Project(projectRequestDto.getLanguage(), projectRequestDto.getTitle());
         projectRepository.save(project);
 
         return ProjectResponseDto.from(project);
