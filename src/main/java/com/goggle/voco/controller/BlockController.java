@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/projects/{projectId}")
+@RequestMapping("/projects/{projectId}/blocks")
 @Log4j2
 @RequiredArgsConstructor
 public class BlockController {
@@ -26,6 +26,5 @@ public class BlockController {
         BlockResponseDto blockResponseDto = blockService.createBlock(audioRequestDto, projectId);
 
         return new ResponseEntity<>(blockResponseDto, HttpStatus.CREATED);
-
     }
 }
