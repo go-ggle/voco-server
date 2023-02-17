@@ -1,10 +1,9 @@
 package com.goggle.voco.controller;
 
 import com.goggle.voco.domain.User;
-import com.goggle.voco.dto.AudioRequestDto;
-import com.goggle.voco.dto.BlockResponseDto;
+import com.goggle.voco.dto.TokenRequestDto;
 import com.goggle.voco.dto.UserRequestDto;
-import com.goggle.voco.service.UserService;
+import com.goggle.voco.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -20,13 +19,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final UserService userService;
+    private final AuthService authService;
 
     @PostMapping("signup")
     public ResponseEntity<User> createUser(@RequestBody UserRequestDto userRequestDto) {
-        User user = userService.createUser(userRequestDto);
+        User user = authService.createUser(userRequestDto);
 
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
+    @PostMapping("login")
+    public ResponseEntity<String> login(@RequestBody TokenRequestDto tokenRequestDto) {
+        String token = authService.createToken(tokenRequestDto);
+
+        return new ResponseEntity<>(token, HttpStatus.OK);
+    }
 }
