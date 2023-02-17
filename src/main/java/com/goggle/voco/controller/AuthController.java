@@ -2,6 +2,7 @@ package com.goggle.voco.controller;
 
 import com.goggle.voco.domain.User;
 import com.goggle.voco.dto.TokenRequestDto;
+import com.goggle.voco.dto.TokenResponseDto;
 import com.goggle.voco.dto.UserRequestDto;
 import com.goggle.voco.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -29,9 +30,9 @@ public class AuthController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<String> login(@RequestBody TokenRequestDto tokenRequestDto) {
-        String token = authService.createToken(tokenRequestDto);
+    public ResponseEntity<TokenResponseDto> login(@RequestBody TokenRequestDto tokenRequestDto) {
+        TokenResponseDto tokenResponseDto = authService.createToken(tokenRequestDto);
 
-        return new ResponseEntity<>(token, HttpStatus.OK);
+        return new ResponseEntity<>(tokenResponseDto, HttpStatus.CREATED);
     }
 }

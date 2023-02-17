@@ -3,6 +3,7 @@ package com.goggle.voco.service;
 import com.goggle.voco.config.security.JwtTokenProvider;
 import com.goggle.voco.domain.User;
 import com.goggle.voco.dto.TokenRequestDto;
+import com.goggle.voco.dto.TokenResponseDto;
 import com.goggle.voco.dto.UserRequestDto;
 import com.goggle.voco.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String createToken(TokenRequestDto tokenRequestDto) {
+    public TokenResponseDto createToken(TokenRequestDto tokenRequestDto) {
         User user = userRepository.findByEmail(tokenRequestDto.getEmail()).orElseThrow();
 
         if (!passwordEncoder.matches(tokenRequestDto.getPassword(), user.getPassword())) {
@@ -40,6 +41,6 @@ public class AuthServiceImpl implements AuthService {
 
         String accessToken = jwtTokenProvider.createToken(String.valueOf(user.getId()));
 
-        return accessToken;
+        return new TokenResponseDto(accessToken);
     }
 }
