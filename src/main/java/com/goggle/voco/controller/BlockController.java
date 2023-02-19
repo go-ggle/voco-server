@@ -22,7 +22,7 @@ public class BlockController {
     private final BlockService blockService;
 
     @PostMapping
-    public ResponseEntity<BlockResponseDto> createBlock(@RequestBody AudioRequestDto audioRequestDto, @PathVariable Long projectId) {
+    public ResponseEntity<BlockResponseDto> createBlock(@RequestBody AudioRequestDto audioRequestDto, @PathVariable("projectId") Long projectId) {
         BlockResponseDto blockResponseDto = blockService.createBlock(audioRequestDto, projectId);
 
         return new ResponseEntity<>(blockResponseDto, HttpStatus.CREATED);
