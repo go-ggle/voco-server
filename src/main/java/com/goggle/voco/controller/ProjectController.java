@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @Controller
-@RequestMapping("/projects")
+@RequestMapping("/teams/{teamId}/projects")
 @Log4j2
 @RequiredArgsConstructor
 public class ProjectController {
@@ -25,16 +25,19 @@ public class ProjectController {
     @PostMapping("")
     public ResponseEntity<ProjectResponseDto> createProject(
             @AuthenticationPrincipal User user,
-            @RequestBody ProjectRequestDto projectRequestDto) {
+            @RequestBody ProjectRequestDto projectRequestDto,
+            @PathVariable("teamId") Long teamId) {
 
-        ProjectResponseDto projectResponseDto = projectService.createProject(projectRequestDto, user);
+        ProjectResponseDto projectResponseDto = projectService.createProject(projectRequestDto, teamId);
 
         return new ResponseEntity<>(projectResponseDto, HttpStatus.CREATED);
     }
 
     @GetMapping("")
-    public ResponseEntity<ProjectsResponseDto> findProjects(@AuthenticationPrincipal User user) {
-        ProjectsResponseDto projectsResponseDto = projectService.findProjects(user);
+    public ResponseEntity<ProjectsResponseDto> findProjects(
+            @AuthenticationPrincipal User user,
+            @PathVariable("teamId") Long teamId) {
+        ProjectsResponseDto projectsResponseDto = projectService.findProjects(teamId);
 
         return new ResponseEntity<>(projectsResponseDto, HttpStatus.OK);
     }

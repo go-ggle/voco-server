@@ -25,7 +25,7 @@ public class ProjectResponseDto {
                 project.getId(),
                 project.getTitle(),
                 project.getLanguage(),
-                project.getUser().getId(),
+                project.getTeam().getId(),
                 project.getCreatedAt(),
                 project.getUpdatedAt()
         );
