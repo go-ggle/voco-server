@@ -1,6 +1,5 @@
 package com.goggle.voco.controller;
 
-import com.goggle.voco.dto.TrainRequestDto;
 import com.goggle.voco.dto.TrainResponseDto;
 import com.goggle.voco.repository.TrainRepository;
 import com.goggle.voco.service.TrainService;
@@ -9,6 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+
 import org.springframework.web.bind.annotation.*;
 
 

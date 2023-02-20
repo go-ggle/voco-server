@@ -41,5 +41,4 @@ public class TrainServiceImpl implements TrainService{
 
         return trainResponseDto;
     }
-
 }
