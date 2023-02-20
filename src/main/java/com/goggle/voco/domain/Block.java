@@ -19,15 +19,16 @@ public class Block extends BaseEntity {
     @Column
     private String text;
     private String audioPath;
-    private int userId;
+    private Long userId;
 
     @ManyToOne
     private Project project;
 
-    public Block(String text, String audioPath, Project project) {
+    public Block(Project project, String text, String audioPath, Long userId) {
+        this.project = project;
         this.text = text;
         this.audioPath = audioPath;
-        this.project = project;
+        this.userId = userId;
     }
 
 }
