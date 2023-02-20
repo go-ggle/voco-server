@@ -18,5 +18,6 @@ public class User_Team extends BaseEntity {
 
     @ManyToOne
     private User user;
+    @ManyToOne
     private Team team;
 }

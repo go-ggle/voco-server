@@ -10,5 +10,5 @@ public class AudioRequestDto {
 
     private String text;
     private int language;
-    private int user;
+    private Long userId;
 }

@@ -11,4 +11,5 @@ public class ProjectRequestDto {
 
     private String title;
     private String language;
+    private Long teamId;
 }
