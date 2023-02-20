@@ -20,7 +20,6 @@ public class Project extends BaseEntity{
     @Column
     private String title;
     private String language;
-    private Boolean isBookmarked;
 
     @ManyToOne
     private User user;
@@ -28,7 +27,6 @@ public class Project extends BaseEntity{
     public Project(String language, String title, User user) {
         this.title = title;
         this.language = language;
-        this.isBookmarked = false;
         this.user = user;
     }
 
