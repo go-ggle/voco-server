@@ -6,6 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,7 +20,7 @@ public class Project extends BaseEntity{
     @Column
     private String title;
     private String language;
-    private boolean isBookmarked;
+    private Boolean isBookmarked;
 
     @ManyToOne
     private User user;
