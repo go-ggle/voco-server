@@ -18,5 +18,10 @@ public class Team extends BaseEntity {
 
     @Column
     private String name;
-    private String team_code;
+    private String teamCode;
+
+    public Team(String name, String teamCode) {
+        this.name = name;
+        this.teamCode = teamCode;
+    }
 }
