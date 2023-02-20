@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = "user")
+@ToString(exclude = "team")
 public class Project extends BaseEntity{
 
     @Id
@@ -21,12 +21,12 @@ public class Project extends BaseEntity{
     private String language;
 
     @ManyToOne
-    private User user;
+    private Team team;
 
-    public Project(String language, String title, User user) {
+    public Project(String language, String title, Team team) {
         this.title = title;
         this.language = language;
-        this.user = user;
+        this.team = team;
     }
 
 }
