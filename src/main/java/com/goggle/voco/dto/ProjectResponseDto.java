@@ -17,7 +17,7 @@ public class ProjectResponseDto {
     private Long id;
     private String title;
     private String language;
-    private Long user;
+    private Long team;
 
     private LocalDateTime createdAt, updatedAt;
     public static ProjectResponseDto from(Project project) {
