@@ -8,4 +8,5 @@ public interface ProjectService {
     ProjectResponseDto createProject(ProjectRequestDto projectRequestDTO);
     ProjectsResponseDto findProjects();
     ProjectResponseDto findProjectById(Long projectId);
+    void deleteProject(Long projectId) throws Exception;
 }
