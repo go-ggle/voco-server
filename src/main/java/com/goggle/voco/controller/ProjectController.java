@@ -1,5 +1,6 @@
 package com.goggle.voco.controller;
 
+import com.goggle.voco.domain.User;
 import com.goggle.voco.dto.ProjectRequestDto;
 import com.goggle.voco.dto.ProjectResponseDto;
 import com.goggle.voco.dto.ProjectsResponseDto;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,15 +23,18 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @PostMapping("")
-    public ResponseEntity<ProjectResponseDto> createProject(@RequestBody ProjectRequestDto projectRequestDto) {
-        ProjectResponseDto projectResponseDto = projectService.createProject(projectRequestDto);
+    public ResponseEntity<ProjectResponseDto> createProject(
+            @AuthenticationPrincipal User user,
+            @RequestBody ProjectRequestDto projectRequestDto) {
+
+        ProjectResponseDto projectResponseDto = projectService.createProject(projectRequestDto, user);
 
         return new ResponseEntity<>(projectResponseDto, HttpStatus.CREATED);
     }
 
     @GetMapping("")
-    public ResponseEntity<ProjectsResponseDto> findProjects() {
-        ProjectsResponseDto projectsResponseDto = projectService.findProjects();
+    public ResponseEntity<ProjectsResponseDto> findProjects(@AuthenticationPrincipal User user) {
+        ProjectsResponseDto projectsResponseDto = projectService.findProjects(user);
 
         return new ResponseEntity<>(projectsResponseDto, HttpStatus.OK);
     }

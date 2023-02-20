@@ -17,13 +17,15 @@ public class ProjectResponseDto {
     private Long id;
     private String title;
     private String language;
-    private LocalDateTime createdAt, updatedAt;
+    private Long user;
 
+    private LocalDateTime createdAt, updatedAt;
     public static ProjectResponseDto from(Project project) {
         return new ProjectResponseDto(
                 project.getId(),
                 project.getTitle(),
                 project.getLanguage(),
+                project.getUser().getId(),
                 project.getCreatedAt(),
                 project.getUpdatedAt()
         );

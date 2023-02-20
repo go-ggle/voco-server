@@ -24,10 +24,11 @@ public class Project extends BaseEntity{
     @ManyToOne
     private User user;
 
-    public Project(String language, String title) {
+    public Project(String language, String title, User user) {
         this.title = title;
         this.language = language;
         this.isBookmarked = false;
+        this.user = user;
     }
 
 }
