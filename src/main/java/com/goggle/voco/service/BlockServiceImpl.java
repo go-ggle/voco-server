@@ -25,7 +25,7 @@ public class BlockServiceImpl implements BlockService {
     private final ProjectRepository projectRepository;
 
     @Override
-    public String createAudio(String text) {
+    public String createAudio(String text, Long userId) {
 
         URI uri = UriComponentsBuilder
                 .fromUriString("http://58.142.29.186:52424")
@@ -37,7 +37,7 @@ public class BlockServiceImpl implements BlockService {
         AudioRequestDto audioRequestDto = new AudioRequestDto();
         audioRequestDto.setLanguage(0);
         audioRequestDto.setText(text);
-        audioRequestDto.setUser(400);
+        audioRequestDto.setUserId(userId);
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -51,12 +51,12 @@ public class BlockServiceImpl implements BlockService {
 
     @Override
     public BlockResponseDto createBlock(AudioRequestDto audioRequestDto, Long projectId) {
-
         String text = audioRequestDto.getText();
-        String audioPath = createAudio(text);
+        Long userId = audioRequestDto.getUserId();
+        String audioPath = createAudio(text, userId);
 
         Project project = projectRepository.findById(projectId).orElseThrow();
-        Block block = new Block(text, audioPath, project);
+        Block block = new Block(project, text, audioPath, userId);
         blockRepository.save(block);
 
         return BlockResponseDto.from(block);

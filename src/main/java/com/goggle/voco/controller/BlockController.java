@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/projects/{projectId}/blocks")
+@RequestMapping("/teams/{teamId}/projects/{projectId}/blocks")
 @Log4j2
 @RequiredArgsConstructor
 public class BlockController {
 
     private final BlockService blockService;
 
-    @PostMapping
+    @PostMapping("")
     public ResponseEntity<BlockResponseDto> createBlock(@RequestBody AudioRequestDto audioRequestDto, @PathVariable("projectId") Long projectId) {
         BlockResponseDto blockResponseDto = blockService.createBlock(audioRequestDto, projectId);
 
