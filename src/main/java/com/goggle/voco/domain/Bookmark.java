@@ -10,7 +10,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString(exclude = {"user", "project"})
-public class Bookmark {
+public class Bookmark extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,5 +18,6 @@ public class Bookmark {
 
     @ManyToOne
     private User user;
+    @ManyToOne
     private Project project;
 }
