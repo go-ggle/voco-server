@@ -30,8 +30,8 @@ public class ProjectServiceImpl implements ProjectService{
     }
 
     @Override
-    public ProjectsResponseDto findProjects() {
-        List<Project> projects = projectRepository.findAll();
+    public ProjectsResponseDto findProjects(User user) {
+        List<Project> projects = projectRepository.findByUser(user);
         List<ProjectResponseDto> projectResponseDtos = projects.stream()
                 .map(project -> ProjectResponseDto.from(project))
                 .collect(Collectors.toList());

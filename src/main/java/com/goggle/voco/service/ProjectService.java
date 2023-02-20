@@ -7,6 +7,6 @@ import com.goggle.voco.dto.ProjectsResponseDto;
 
 public interface ProjectService {
     ProjectResponseDto createProject(ProjectRequestDto projectRequestDTO, User user);
-    ProjectsResponseDto findProjects();
+    ProjectsResponseDto findProjects(User user);
     ProjectResponseDto findProjectById(Long projectId);
 }

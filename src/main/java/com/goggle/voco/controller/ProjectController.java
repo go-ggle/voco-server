@@ -33,8 +33,8 @@ public class ProjectController {
     }
 
     @GetMapping("")
-    public ResponseEntity<ProjectsResponseDto> findProjects() {
-        ProjectsResponseDto projectsResponseDto = projectService.findProjects();
+    public ResponseEntity<ProjectsResponseDto> findProjects(@AuthenticationPrincipal User user) {
+        ProjectsResponseDto projectsResponseDto = projectService.findProjects(user);
 
         return new ResponseEntity<>(projectsResponseDto, HttpStatus.OK);
     }
