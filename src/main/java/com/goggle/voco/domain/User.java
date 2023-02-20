@@ -27,9 +27,6 @@ public class User extends BaseEntity implements UserDetails {
     @Column
     private String email;
     private String nickname;
-    private String socialType;
-    private String socialId;
-    private String refreshToken;
 
     public User(String email, String nickname, String password) {
         this.email=email;

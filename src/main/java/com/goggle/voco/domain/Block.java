@@ -19,6 +19,7 @@ public class Block extends BaseEntity {
     @Column
     private String text;
     private String audioPath;
+    private int userId;
 
     @ManyToOne
     private Project project;
