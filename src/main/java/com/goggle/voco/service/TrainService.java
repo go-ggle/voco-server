@@ -1,8 +1,9 @@
 package com.goggle.voco.service;
 
 import com.goggle.voco.dto.TrainRequestDto;
-import reactor.core.publisher.Mono;
+import com.goggle.voco.dto.TrainResponseDto;
 
 public interface TrainService {
-    Mono<Void> startTrain(TrainRequestDto trainRequestDto);
+    TrainResponseDto findTrainById(Long id);
+    TrainResponseDto createTrain(TrainRequestDto trainRequestDto);
 }

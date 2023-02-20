@@ -1,6 +1,7 @@
 package com.goggle.voco.service;
 
 import com.goggle.voco.domain.Project;
+import com.goggle.voco.domain.User;
 import com.goggle.voco.dto.ProjectRequestDto;
 import com.goggle.voco.dto.ProjectResponseDto;
 import com.goggle.voco.dto.ProjectsResponseDto;
@@ -21,16 +22,16 @@ public class ProjectServiceImpl implements ProjectService{
     private final ProjectRepository projectRepository;
 
     @Override
-    public ProjectResponseDto createProject(ProjectRequestDto projectRequestDto) {
-        Project project = new Project(projectRequestDto.getLanguage(), projectRequestDto.getTitle());
+    public ProjectResponseDto createProject(ProjectRequestDto projectRequestDto, User user) {
+        Project project = new Project(projectRequestDto.getLanguage(), projectRequestDto.getTitle(), user);
         projectRepository.save(project);
 
         return ProjectResponseDto.from(project);
     }
 
     @Override
-    public ProjectsResponseDto findProjects() {
-        List<Project> projects = projectRepository.findAll();
+    public ProjectsResponseDto findProjects(User user) {
+        List<Project> projects = projectRepository.findByUser(user);
         List<ProjectResponseDto> projectResponseDtos = projects.stream()
                 .map(project -> ProjectResponseDto.from(project))
                 .collect(Collectors.toList());

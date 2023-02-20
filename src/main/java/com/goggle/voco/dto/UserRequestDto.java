@@ -4,15 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import lombok.Setter;
-
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TrainRequestDto {
+public class UserRequestDto {
 
-    private int text_id;
-    private String text;
-
+    private String email;
+    private String nickname;
+    private String password;
 }

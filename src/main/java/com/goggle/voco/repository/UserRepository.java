@@ -1,7 +1,12 @@
 package com.goggle.voco.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import com.goggle.voco.domain.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<User, Long>{
+import java.util.Optional;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+
+    Optional<User> findById(Long id);
+    Optional<User> findByEmail(String email);
 }

@@ -1,28 +1,44 @@
 package com.goggle.voco.service;
 
-
+import com.goggle.voco.domain.Train;
 import com.goggle.voco.dto.TrainRequestDto;
+import com.goggle.voco.dto.TrainResponseDto;
+import com.goggle.voco.repository.TrainRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 @Service
 @Log4j2
 @RequiredArgsConstructor
-public class TrainServiceImpl implements TrainService {
-    @Override
-    public Mono<Void> startTrain(TrainRequestDto trainRequestDto) {
-        WebClient client = WebClient.builder()
-                .baseUrl("http://58.142.29.186:52424")
-                .defaultCookie("cookieKey", "cookieValue")
-                .build();
+public class TrainServiceImpl implements TrainService{
+    private final TrainRepository trainRepository;
 
-        return client.post()
-                .uri("/train")
-                .body(Mono.just(trainRequestDto), TrainRequestDto.class)
-                .retrieve()
-                .bodyToMono(Void.class);
+    @Override
+    public TrainResponseDto findTrainById(Long id) {
+        Train train = trainRepository.getReferenceById(id);
+
+        TrainResponseDto trainResponseDto = new TrainResponseDto();
+        trainResponseDto.setId(train.getId());
+        trainResponseDto.setText_id(train.getText_id());
+        trainResponseDto.setText(train.getText());
+
+        return trainResponseDto;
+    }
+
+    @Override
+    public TrainResponseDto createTrain(TrainRequestDto trainRequestDto) {
+        Train train = new Train();
+        train.setText_id(trainRequestDto.getText_id());
+        train.setText(trainRequestDto.getText());
+
+        trainRepository.save(train);
+
+        TrainResponseDto trainResponseDto = new TrainResponseDto();
+        trainResponseDto.setId(train.getId());
+        trainResponseDto.setText_id(train.getText_id());
+        trainResponseDto.setText(train.getText());
+
+        return trainResponseDto;
     }
 }
