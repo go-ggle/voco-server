@@ -45,4 +45,10 @@ public class ProjectController {
 
         return new ResponseEntity<>(projectResponseDto, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{projectId}")
+    public ResponseEntity<String> deleteProject(@PathVariable("projectId") Long projectId) throws Exception {
+        projectService.deleteProject(projectId);
+        return ResponseEntity.status(HttpStatus.OK).body("정상적으로 삭제되었습니다.");
+    }
 }

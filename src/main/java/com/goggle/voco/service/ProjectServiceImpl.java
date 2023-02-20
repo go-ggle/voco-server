@@ -48,4 +48,18 @@ public class ProjectServiceImpl implements ProjectService{
         }
         return null;
     }
+
+    @Override
+    public void deleteProject(Long projectId) throws Exception {
+        Optional<Project> selectedProject = projectRepository.findById(projectId);
+
+        if(selectedProject.isPresent()){
+            Project project = selectedProject.get();
+
+            projectRepository.delete(project);
+        }
+        else{
+            throw new Exception();
+        }
+    }
 }
