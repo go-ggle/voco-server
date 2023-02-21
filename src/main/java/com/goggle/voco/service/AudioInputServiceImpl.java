@@ -42,6 +42,5 @@ public class AudioInputServiceImpl implements AudioInputService{
                 .block();
 
         return audioInputResponseDto;
-
     }
 }
