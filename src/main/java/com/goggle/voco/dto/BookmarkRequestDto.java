@@ -9,7 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookmarkResponseDto {
-    private Long id;
-    private Long projectId;
+public class BookmarkRequestDto {
+    private Long userId;
 }

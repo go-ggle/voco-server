@@ -4,5 +4,6 @@ import com.goggle.voco.dto.BookmarkRequestDto;
 import com.goggle.voco.dto.BookmarkResponseDto;
 
 public interface BookmarkService {
-    BookmarkResponseDto bookmarkProject(Long projectId) throws Exception;
+    BookmarkResponseDto createBookmark(Long projectId, BookmarkRequestDto bookmarkRequestDto) throws Exception;
+    void deleteBookmark(Long projectId, BookmarkRequestDto bookmarkRequestDto) throws Exception;
 }
