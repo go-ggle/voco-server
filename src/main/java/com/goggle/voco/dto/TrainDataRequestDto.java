@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TrainRequestDto {
+public class TrainDataRequestDto {
 
     private int text_id;
     private String text;
