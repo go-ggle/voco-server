@@ -12,6 +12,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Book;
 import java.util.Optional;
 
 @Service
@@ -53,5 +54,18 @@ public class BookmarkServiceImpl implements BookmarkService{
         bookmarkResponseDto.setProjectId(projectId);
 
         return bookmarkResponseDto;
+    }
+
+    @Override
+    public void deleteBookmark(Long projectId, BookmarkRequestDto bookmarkRequestDto) throws Exception {
+        Optional<Bookmark> selectedBookmark = bookmarkRepository.findByUserAndProject(bookmarkRequestDto.getUserId(), projectId);
+
+        if(selectedBookmark.isPresent()){
+            Bookmark bookmark = selectedBookmark.get();
+            bookmarkRepository.delete(bookmark);
+        }
+        else{
+            throw new Exception();
+        }
     }
 }
