@@ -29,7 +29,7 @@ public class TrainDataServiceImpl implements TrainDataService {
     @Override
     public TrainDataResponseDto createTrain(TrainDataRequestDto trainDataRequestDto) {
         Train train = new Train();
-        train.setText_id(trainDataRequestDto.getText_id());
+        train.setText_id(trainDataRequestDto.getTextId());
         train.setText(trainDataRequestDto.getText());
 
         trainRepository.save(train);

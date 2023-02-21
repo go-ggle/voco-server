@@ -11,8 +11,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TrainDataRequestDto {
-
-    private int text_id;
+    private int textId;
     private String text;
-
 }

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @Controller
-@RequestMapping("/trains")
+@RequestMapping("/train-data")
 @Log4j2
 @RequiredArgsConstructor
 public class TrainDataController {
