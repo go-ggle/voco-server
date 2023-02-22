@@ -1,6 +1,5 @@
 package com.goggle.voco.service;
 
-import com.goggle.voco.dto.AudioInputResponseDto;
 import com.goggle.voco.dto.TrainRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

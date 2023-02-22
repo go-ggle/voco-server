@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AudioInputRequestDto {
-    private int text_id;
-    private int user_id;
+    private int textId;
+    private int userId;
+    MultipartFile audio;
 }
