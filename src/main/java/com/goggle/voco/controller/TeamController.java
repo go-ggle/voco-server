@@ -28,4 +28,14 @@ public class TeamController {
 
         return new ResponseEntity<>(teamResponseDto, HttpStatus.CREATED);
     }
+
+    @PostMapping("/{teamCode}")
+    public ResponseEntity<TeamResponseDto> joinTeam(
+            @AuthenticationPrincipal User user,
+            @PathVariable("teamCode") String teamCode,
+            @RequestBody TeamRequestDto teamRequestDto) throws Exception {
+        TeamResponseDto teamResponseDto = teamService.joinTeam(teamCode, teamRequestDto);
+
+        return new ResponseEntity<>(teamResponseDto, HttpStatus.CREATED);
+    }
 }

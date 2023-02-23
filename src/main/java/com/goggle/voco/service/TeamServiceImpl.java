@@ -61,4 +61,26 @@ public class TeamServiceImpl implements TeamService {
         }
         return TeamResponseDto.from(team);
     }
+
+    @Override
+    public TeamResponseDto joinTeam(String teamCode, TeamRequestDto teamRequestDto) throws Exception {
+        Optional<Team> selectedTeam = teamRepository.findByTeamCode(teamCode);
+        Optional<User> selectedUser = userRepository.findById(teamRequestDto.getUserId());
+
+        User_Team userTeam = new User_Team();
+        if(selectedTeam.isPresent() && selectedUser.isPresent()){
+            Team team = selectedTeam.get();
+            User user = selectedUser.get();
+
+            userTeam.setTeam(team);
+            userTeam.setUser(user);
+
+            userTeamRepository.save(userTeam);
+        }
+        else{
+            throw new Exception();
+        }
+
+        return TeamResponseDto.from(selectedTeam.get());
+    }
 }

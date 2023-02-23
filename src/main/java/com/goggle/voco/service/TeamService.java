@@ -5,4 +5,5 @@ import com.goggle.voco.dto.TeamResponseDto;
 
 public interface TeamService {
     TeamResponseDto createTeam(TeamRequestDto teamRequestDto) throws Exception;
+    TeamResponseDto joinTeam(String teamCode, TeamRequestDto teamRequestDto) throws Exception;
 }
