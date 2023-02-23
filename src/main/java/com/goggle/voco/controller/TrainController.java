@@ -21,7 +21,7 @@ public class TrainController {
     private final TrainService trainService;
 
     @PostMapping("")
-    public ResponseEntity<String> startTrain(@RequestBody TrainRequestDto trainRequestDto) {
+    public ResponseEntity<String> startTrain(@RequestBody TrainRequestDto trainRequestDto) throws Exception {
         trainService.startTrain(trainRequestDto);
         return ResponseEntity.status(HttpStatus.OK).body("정상적으로 훈련이 시작되었습니다.");
     }
