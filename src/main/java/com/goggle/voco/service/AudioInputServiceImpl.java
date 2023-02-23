@@ -25,13 +25,17 @@ public class AudioInputServiceImpl implements AudioInputService{
                 .defaultCookie("cookieKey", "cookieValue")
                 .build();
 
+        byte[] bytes = audio.getBytes();
+        System.out.printf(bytes.toString());
         MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
         multipartBodyBuilder
                 .part("data", audioInputRequestDto)
                 .header("Content-Type", "application/json");
         multipartBodyBuilder
                 .part("audio", new ByteArrayResource(audio.getBytes()))
-                .header("Content-Type", "audio/mpeg");
+                .header("Content-Disposition",
+                        "form-data; name=audio;");
+                //.header("Content-Type", "audio/mpeg");
 
         AudioInputResponseDto audioInputResponseDto = client.post()
                 .uri("/put_data")

@@ -10,5 +10,5 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AudioInputResponseDto {
-    private int textId;
+    private Long textId;
 }
