@@ -10,6 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TeamRequestDto {
-    private String userId;
+    private Long userId;
     private String name;
 }
