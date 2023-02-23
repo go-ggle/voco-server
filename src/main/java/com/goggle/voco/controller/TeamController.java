@@ -23,7 +23,7 @@ public class TeamController {
     @PostMapping("")
     public ResponseEntity<TeamResponseDto> createTeam(
             @AuthenticationPrincipal User user,
-            @RequestBody TeamRequestDto teamRequestDto) {
+            @RequestBody TeamRequestDto teamRequestDto) throws Exception {
         TeamResponseDto teamResponseDto = teamService.createTeam(teamRequestDto);
 
         return new ResponseEntity<>(teamResponseDto, HttpStatus.CREATED);

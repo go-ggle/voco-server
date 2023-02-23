@@ -38,7 +38,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public TeamResponseDto createTeam(TeamRequestDto teamRequestDto) {
+    public TeamResponseDto createTeam(TeamRequestDto teamRequestDto) throws Exception {
         String teamCode = createCode();
         Team team = new Team(teamRequestDto.getName(), teamCode);
         teamRepository.save(team);
@@ -55,6 +55,9 @@ public class TeamServiceImpl implements TeamService {
             userTeam.setUser(user);
 
             userTeamRepository.save(userTeam);
+        }
+        else{
+            throw new Exception();
         }
         return TeamResponseDto.from(team);
     }
