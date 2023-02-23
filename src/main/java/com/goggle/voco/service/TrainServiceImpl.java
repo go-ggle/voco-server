@@ -1,13 +1,13 @@
 package com.goggle.voco.service;
 
 import com.goggle.voco.dto.TrainRequestDto;
+import com.goggle.voco.dto.TrainResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.time.Duration;
 
 @Service
 @Log4j2
@@ -25,8 +25,7 @@ public class TrainServiceImpl implements TrainService{
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(trainRequestDto)
                 .retrieve()
-                .bodyToMono(Void.class)
-                .timeout(Duration.ofSeconds(2000))
+                .bodyToMono(TrainResponseDto.class)
                 .subscribe();
     }
 }
