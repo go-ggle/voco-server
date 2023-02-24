@@ -1,8 +1,8 @@
-REPOSITORY=/home/ubuntu
+REPOSITORY=/home/ubuntu/build/libs
  
 cd $REPOSITORY
  
-JAR_NAME=$(ls $REPOSITORY/build/libs | grep '*SNAPSHOT.war' | tail -n 1)
+JAR_NAME=$(ls $REPOSITORY | grep '*SNAPSHOT.war' | tail -n 1)
 JAR_PATH=$REPOSITORY/$JAR_NAME
  
 CURRENT_PID=$(pgrep -f *.war)
