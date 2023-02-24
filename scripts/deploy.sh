@@ -2,10 +2,10 @@ REPOSITORY=/home/ubuntu
  
 cd $REPOSITORY
  
-JAR_NAME=$(ls $REPOSITORY/ | grep '.jar' | tail -n 1)
+JAR_NAME=$(ls $REPOSITORY/build/libs | grep '*SNAPSHOT.war' | tail -n 1)
 JAR_PATH=$REPOSITORY/$JAR_NAME
  
-CURRENT_PID=$(pgrep -f *.jar)
+CURRENT_PID=$(pgrep -f *.war)
  
 if [ -z $CURRENT_PID ]
 then
