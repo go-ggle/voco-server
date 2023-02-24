@@ -24,7 +24,7 @@ public class TeamController {
     public ResponseEntity<TeamResponseDto> createTeam(
             @AuthenticationPrincipal User user,
             @RequestBody TeamRequestDto teamRequestDto) throws Exception {
-        TeamResponseDto teamResponseDto = teamService.createTeam(teamRequestDto);
+        TeamResponseDto teamResponseDto = teamService.createTeam(user, teamRequestDto);
 
         return new ResponseEntity<>(teamResponseDto, HttpStatus.CREATED);
     }
@@ -32,9 +32,8 @@ public class TeamController {
     @PostMapping("/{teamCode}")
     public ResponseEntity<TeamResponseDto> joinTeam(
             @AuthenticationPrincipal User user,
-            @PathVariable("teamCode") String teamCode,
-            @RequestBody TeamRequestDto teamRequestDto) throws Exception {
-        TeamResponseDto teamResponseDto = teamService.joinTeam(teamCode, teamRequestDto);
+            @PathVariable("teamCode") String teamCode) throws Exception {
+        TeamResponseDto teamResponseDto = teamService.joinTeam(user, teamCode);
 
         return new ResponseEntity<>(teamResponseDto, HttpStatus.CREATED);
     }

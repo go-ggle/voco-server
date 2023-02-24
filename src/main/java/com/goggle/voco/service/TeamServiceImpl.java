@@ -38,21 +38,18 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public TeamResponseDto createTeam(TeamRequestDto teamRequestDto) throws Exception {
+    public TeamResponseDto createTeam(User user, TeamRequestDto teamRequestDto) throws Exception {
         String teamCode = createCode();
         Team team = new Team(teamRequestDto.getName(), teamCode);
         teamRepository.save(team);
 
         Optional<Team> selectedTeam = teamRepository.findByTeamCode(teamCode);
-        Optional<User> selectedUser = userRepository.findById(teamRequestDto.getUserId());
+        Optional<User> selectedUser = userRepository.findById(user.getId());
 
         Participation participation = new Participation();
         if(selectedTeam.isPresent() && selectedUser.isPresent()){
-            Team createdTeam = selectedTeam.get();
-            User user = selectedUser.get();
-
-            participation.setTeam(createdTeam);
-            participation.setUser(user);
+            participation.setTeam(selectedTeam.get());
+            participation.setUser(selectedUser.get());
 
             participationRepository.save(participation);
         }
@@ -63,17 +60,14 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public TeamResponseDto joinTeam(String teamCode, TeamRequestDto teamRequestDto) throws Exception {
+    public TeamResponseDto joinTeam(User user, String teamCode) throws Exception {
         Optional<Team> selectedTeam = teamRepository.findByTeamCode(teamCode);
-        Optional<User> selectedUser = userRepository.findById(teamRequestDto.getUserId());
+        Optional<User> selectedUser = userRepository.findById(user.getId());
 
         Participation participation = new Participation();
         if(selectedTeam.isPresent() && selectedUser.isPresent()){
-            Team team = selectedTeam.get();
-            User user = selectedUser.get();
-
-            participation.setTeam(team);
-            participation.setUser(user);
+            participation.setTeam(selectedTeam.get());
+            participation.setUser(selectedUser.get());
 
             participationRepository.save(participation);
         }
