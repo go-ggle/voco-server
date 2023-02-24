@@ -2,12 +2,12 @@ package com.goggle.voco.service;
 
 import com.goggle.voco.domain.Team;
 import com.goggle.voco.domain.User;
-import com.goggle.voco.domain.User_Team;
+import com.goggle.voco.domain.Participation;
 import com.goggle.voco.dto.TeamRequestDto;
 import com.goggle.voco.dto.TeamResponseDto;
 import com.goggle.voco.repository.TeamRepository;
 import com.goggle.voco.repository.UserRepository;
-import com.goggle.voco.repository.UserTeamRepository;
+import com.goggle.voco.repository.ParticipationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ public class TeamServiceImpl implements TeamService {
 
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
-    private final UserTeamRepository userTeamRepository;
+    private final ParticipationRepository participationRepository;
 
     public String createCode(){
         String alphaNum = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -46,15 +46,15 @@ public class TeamServiceImpl implements TeamService {
         Optional<Team> selectedTeam = teamRepository.findByTeamCode(teamCode);
         Optional<User> selectedUser = userRepository.findById(teamRequestDto.getUserId());
 
-        User_Team userTeam = new User_Team();
+        Participation participation = new Participation();
         if(selectedTeam.isPresent() && selectedUser.isPresent()){
             Team createdTeam = selectedTeam.get();
             User user = selectedUser.get();
 
-            userTeam.setTeam(createdTeam);
-            userTeam.setUser(user);
+            participation.setTeam(createdTeam);
+            participation.setUser(user);
 
-            userTeamRepository.save(userTeam);
+            participationRepository.save(participation);
         }
         else{
             throw new Exception();
@@ -67,15 +67,15 @@ public class TeamServiceImpl implements TeamService {
         Optional<Team> selectedTeam = teamRepository.findByTeamCode(teamCode);
         Optional<User> selectedUser = userRepository.findById(teamRequestDto.getUserId());
 
-        User_Team userTeam = new User_Team();
+        Participation participation = new Participation();
         if(selectedTeam.isPresent() && selectedUser.isPresent()){
             Team team = selectedTeam.get();
             User user = selectedUser.get();
 
-            userTeam.setTeam(team);
-            userTeam.setUser(user);
+            participation.setTeam(team);
+            participation.setUser(user);
 
-            userTeamRepository.save(userTeam);
+            participationRepository.save(participation);
         }
         else{
             throw new Exception();
