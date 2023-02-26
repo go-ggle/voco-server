@@ -12,6 +12,13 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.File;
 import java.io.IOException;
 
 @Service
@@ -19,22 +26,23 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class AudioInputServiceImpl implements AudioInputService{
     @Override
-    public AudioInputResponseDto audioInput(MultipartFile audio, AudioInputRequestDto audioInputRequestDto) throws IOException{
+    public AudioInputResponseDto audioInput(MultipartFile audio, AudioInputRequestDto audioInputRequestDto) throws IOException {
         WebClient client = WebClient.builder()
                 .baseUrl("http://58.142.29.186:52424")
                 .defaultCookie("cookieKey", "cookieValue")
                 .build();
 
-        byte[] bytes = audio.getBytes();
-        System.out.printf(bytes.toString());
+        //byte[] bytes = audio.getBytes();
+        //System.out.printf(bytes.toString());
         MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
         multipartBodyBuilder
                 .part("data", audioInputRequestDto)
                 .header("Content-Type", "application/json");
         multipartBodyBuilder
-                .part("audio", new ByteArrayResource(audio.getBytes()))
+                .part("audio", audio.getResource())
                 .header("Content-Disposition",
-                        "form-data; name=audio;");
+                        "form-data; name=audio;")
+                .header("Content-Type", "multipart/form-data");
                 //.header("Content-Type", "audio/mpeg");
 
         AudioInputResponseDto audioInputResponseDto = client.post()

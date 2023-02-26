@@ -4,6 +4,7 @@ import com.goggle.voco.dto.AudioInputRequestDto;
 import com.goggle.voco.dto.AudioInputResponseDto;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
 
 public interface AudioInputService{
