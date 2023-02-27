@@ -8,6 +8,7 @@ import com.goggle.voco.repository.BlockRepository;
 import com.goggle.voco.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -23,11 +24,20 @@ public class BlockServiceImpl implements BlockService {
     private final BlockRepository blockRepository;
     private final ProjectRepository projectRepository;
 
+    @Value("${AUDIO_BUCKET_NAME}")
+    private String AUDIO_BUCKET_NAME;
+    @Value("${AWS_REGION}")
+    private String AWS_REGION;
+    @Value("${AI_ADDRESS}")
+    private String AI_ADDRESS;
+    @Value("${FLASK_PORT}")
+    private String FLASK_PORT;
+
     @Override
     public String createAudio(AudioRequestDto audioRequestDto) {
 
         URI uri = UriComponentsBuilder
-                .fromUriString("http://58.142.29.186:52424")
+                .fromUriString("http://" + AI_ADDRESS + ":" + FLASK_PORT)
                 .path("/tts")
                 .encode()
                 .build()
@@ -38,7 +48,9 @@ public class BlockServiceImpl implements BlockService {
         ResponseEntity<byte[]> audioEntity = restTemplate.postForEntity(uri, audioRequestDto, byte[].class);
         byte[] body = audioEntity.getBody();
 
-        String audioPath = "sample.wav";
+        Long projectId = audioRequestDto.getProjectId();
+        Long blockId = audioRequestDto.getBlockId();
+        String audioPath = "https://" + AUDIO_BUCKET_NAME + ".s3." + AWS_REGION + ".amazonaws.com/"+ projectId + "/" + blockId + ".wav";
 
         return audioPath;
     }
