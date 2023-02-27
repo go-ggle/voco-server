@@ -9,4 +9,5 @@ public interface BlockService {
     String createAudio(AudioRequestDto audioRequestDto);
     BlockResponseDto createBlock(AudioRequestDto audioRequestDto, Long projectId);
     BlocksResponseDto findBlocks(Long teamId);
+    void deleteBlock(Long blockId) throws Exception;
 }

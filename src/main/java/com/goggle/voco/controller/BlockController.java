@@ -37,4 +37,10 @@ public class BlockController {
 
         return new ResponseEntity<>(blocksResponseDto, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{blockId}")
+    public ResponseEntity<String> deleteBlock(@PathVariable("blockId") Long blockId) throws Exception {
+        blockService.deleteBlock(blockId);
+        return ResponseEntity.status(HttpStatus.OK).body("정상적으로 삭제되었습니다.");
+    }
 }

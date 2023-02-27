@@ -15,6 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -81,5 +82,19 @@ public class BlockServiceImpl implements BlockService {
                 .collect(Collectors.toList());
 
         return new BlocksResponseDto(blocksResponseDtos);
+    }
+
+    //TODO: 버켓에서 음성 삭제
+    @Override
+    public void deleteBlock(Long blockId) throws Exception {
+        Optional<Block> selectedBlock = blockRepository.findById(blockId);
+
+        if(selectedBlock.isPresent()){
+            Block block = selectedBlock.get();
+            blockRepository.delete(block);
+        }
+        else {
+            throw new Exception();
+        }
     }
 }
