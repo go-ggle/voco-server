@@ -14,7 +14,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.Optional;
 
 @Service
 @Log4j2
@@ -25,7 +24,7 @@ public class BlockServiceImpl implements BlockService {
     private final ProjectRepository projectRepository;
 
     @Override
-    public String createAudio(String text, Long userId) {
+    public String createAudio(AudioRequestDto audioRequestDto) {
 
         URI uri = UriComponentsBuilder
                 .fromUriString("http://58.142.29.186:52424")
@@ -33,11 +32,6 @@ public class BlockServiceImpl implements BlockService {
                 .encode()
                 .build()
                 .toUri();
-
-        AudioRequestDto audioRequestDto = new AudioRequestDto();
-        audioRequestDto.setLanguage(0);
-        audioRequestDto.setText(text);
-        audioRequestDto.setUserId(userId);
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -53,11 +47,15 @@ public class BlockServiceImpl implements BlockService {
     public BlockResponseDto createBlock(AudioRequestDto audioRequestDto, Long projectId) {
         String text = audioRequestDto.getText();
         Long userId = audioRequestDto.getUserId();
-        String audioPath = createAudio(text, userId);
+        audioRequestDto.setProjectId(projectId);
 
         Project project = projectRepository.findById(projectId).orElseThrow();
-        Block block = new Block(project, text, audioPath, userId);
+        Block block = new Block(project, text, "", userId);
         blockRepository.save(block);
+
+        audioRequestDto.setBlockId(block.getId());
+        String audioPath = createAudio(audioRequestDto);
+        block.setAudioPath(audioPath);
 
         return BlockResponseDto.from(block);
     }

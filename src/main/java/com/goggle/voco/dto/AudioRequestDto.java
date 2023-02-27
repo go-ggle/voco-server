@@ -9,6 +9,8 @@ import lombok.*;
 public class AudioRequestDto {
 
     private String text;
-    private int language;
+    private Long language;
     private Long userId;
+    private Long blockId;
+    private Long projectId;
 }
