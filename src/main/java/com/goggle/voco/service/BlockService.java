@@ -10,4 +10,5 @@ public interface BlockService {
     BlockResponseDto createBlock(AudioRequestDto audioRequestDto, Long projectId);
     BlocksResponseDto findBlocks(Long teamId);
     void deleteBlock(Long blockId) throws Exception;
+    BlockResponseDto updateBlock(AudioRequestDto audioRequestDto, Long blockId) throws Exception;
 }

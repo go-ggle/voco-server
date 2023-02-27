@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -96,5 +97,27 @@ public class BlockServiceImpl implements BlockService {
         else {
             throw new Exception();
         }
+    }
+
+    @Override
+    public BlockResponseDto updateBlock(AudioRequestDto audioRequestDto, Long blockId) throws Exception {
+        Optional<Block> selectedBlock = blockRepository.findById(blockId);
+
+        Block updatedBlock;
+        if (selectedBlock.isPresent()) {
+            Block block = selectedBlock.get();
+            audioRequestDto.setProjectId(block.getProject().getId());
+            audioRequestDto.setBlockId(block.getId());
+
+            block.setText(audioRequestDto.getText());
+            block.setAudioPath(createAudio(audioRequestDto));
+            block.setUpdatedAt(LocalDateTime.now());
+
+            updatedBlock = blockRepository.save(block);
+        } else {
+            throw new Exception();
+        }
+
+        return BlockResponseDto.from(updatedBlock);
     }
 }

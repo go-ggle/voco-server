@@ -4,7 +4,6 @@ import com.goggle.voco.domain.User;
 import com.goggle.voco.dto.AudioRequestDto;
 import com.goggle.voco.dto.BlockResponseDto;
 import com.goggle.voco.dto.BlocksResponseDto;
-import com.goggle.voco.dto.ProjectsResponseDto;
 import com.goggle.voco.service.BlockService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -42,5 +41,11 @@ public class BlockController {
     public ResponseEntity<String> deleteBlock(@PathVariable("blockId") Long blockId) throws Exception {
         blockService.deleteBlock(blockId);
         return ResponseEntity.status(HttpStatus.OK).body("정상적으로 삭제되었습니다.");
+    }
+
+    @PatchMapping("/{blockId}")
+    public ResponseEntity<BlockResponseDto> updateBlock(@RequestBody AudioRequestDto audioRequestDto, @PathVariable("blockId") Long blockId) throws Exception{
+        BlockResponseDto blockResponseDto = blockService.updateBlock(audioRequestDto, blockId);
+        return new ResponseEntity<>(blockResponseDto, HttpStatus.OK);
     }
 }
