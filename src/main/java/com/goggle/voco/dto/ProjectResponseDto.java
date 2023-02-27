@@ -16,7 +16,7 @@ public class ProjectResponseDto {
 
     private Long id;
     private String title;
-    private String language;
+    private Long language;
     private Long team;
 
     private LocalDateTime createdAt, updatedAt;

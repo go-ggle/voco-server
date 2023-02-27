@@ -2,8 +2,7 @@ package com.goggle.voco.service;
 
 import com.goggle.voco.domain.Block;
 import com.goggle.voco.domain.Project;
-import com.goggle.voco.dto.AudioRequestDto;
-import com.goggle.voco.dto.BlockResponseDto;
+import com.goggle.voco.dto.*;
 import com.goggle.voco.repository.BlockRepository;
 import com.goggle.voco.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +14,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -70,5 +71,15 @@ public class BlockServiceImpl implements BlockService {
         block.setAudioPath(audioPath);
 
         return BlockResponseDto.from(block);
+    }
+
+    @Override
+    public BlocksResponseDto findBlocks(Long projectId) {
+        List<Block> blocks = blockRepository.findByProjectId(projectId);
+        List<BlockResponseDto> blocksResponseDtos = blocks.stream()
+                .map(block -> BlockResponseDto.from(block))
+                .collect(Collectors.toList());
+
+        return new BlocksResponseDto(blocksResponseDtos);
     }
 }
