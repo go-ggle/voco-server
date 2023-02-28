@@ -1,5 +1,6 @@
 package com.goggle.voco.service;
 
+import com.goggle.voco.domain.User;
 import com.goggle.voco.dto.AudioInputRequestDto;
 import com.goggle.voco.dto.AudioInputResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,7 @@ public class AudioInputServiceImpl implements AudioInputService{
     private String FLASK_PORT;
 
     @Override
-    public AudioInputResponseDto audioInput(MultipartFile audio, AudioInputRequestDto audioInputRequestDto) throws IOException {
+    public AudioInputResponseDto audioInput(User user, Long textId, MultipartFile audio) throws IOException {
         WebClient client = WebClient.builder()
                 .baseUrl("http://" + AI_ADDRESS + ":" + FLASK_PORT)
                 .defaultCookie("cookieKey", "cookieValue")
@@ -42,17 +43,17 @@ public class AudioInputServiceImpl implements AudioInputService{
         //System.out.printf(bytes.toString());
         MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
         multipartBodyBuilder
-                .part("data", audioInputRequestDto)
-                .header("Content-Type", "application/json");
-        multipartBodyBuilder
                 .part("audio", audio.getResource())
                 .header("Content-Disposition",
                         "form-data; name=audio;")
-                .header("Content-Type", "multipart/form-data");
+                .header("Content-Type", "audio/wav");
                 //.header("Content-Type", "audio/mpeg");
 
         AudioInputResponseDto audioInputResponseDto = client.post()
-                .uri("/put_data")
+                .uri(uriBuilder -> uriBuilder.path("/put_data")
+                        .queryParam("textId", textId)
+                        .queryParam("userId", user.getId())
+                        .build())
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .body(BodyInserters.fromMultipartData(multipartBodyBuilder.build()))
                 .retrieve()

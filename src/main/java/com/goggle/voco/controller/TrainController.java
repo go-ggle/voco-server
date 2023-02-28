@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/train")
+@RequestMapping("/trains")
 @Log4j2
 @RequiredArgsConstructor
 public class TrainController {
