@@ -21,6 +21,7 @@ public class Block extends BaseEntity {
     private String text;
     private String audioPath;
     private Long userId;
+    @Column(name="`INTERVAL`")
     private Long interval;
 
     @ManyToOne
