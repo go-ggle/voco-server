@@ -10,9 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TrainResponseDto {
-
-    private Long id;
-    private int text_id;
-    private String text;
-
+    private Long userId;
+    private Boolean isRegistered;
 }

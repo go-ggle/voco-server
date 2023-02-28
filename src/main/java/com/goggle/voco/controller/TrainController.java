@@ -1,38 +1,28 @@
 package com.goggle.voco.controller;
 
+import com.goggle.voco.dto.TrainDataRequestDto;
+import com.goggle.voco.dto.TrainDataResponseDto;
 import com.goggle.voco.dto.TrainRequestDto;
-import com.goggle.voco.dto.TrainResponseDto;
-import com.goggle.voco.repository.TrainRepository;
 import com.goggle.voco.service.TrainService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-
-import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/trains")
 @Log4j2
 @RequiredArgsConstructor
 public class TrainController {
-
     private final TrainService trainService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<TrainResponseDto> getTrain(@PathVariable Long id) {
-        TrainResponseDto trainResponseDto = trainService.findTrainById(id);
-
-        return new ResponseEntity<>(trainResponseDto, HttpStatus.CREATED);
-    }
-
     @PostMapping("")
-    public ResponseEntity<TrainResponseDto> createTrain(@RequestBody TrainRequestDto trainRequestDto) {
-        TrainResponseDto trainResponseDto = trainService.createTrain(trainRequestDto);
-
-        return ResponseEntity.status(HttpStatus.OK).body(trainResponseDto);
+    public ResponseEntity<String> startTrain(@RequestBody TrainRequestDto trainRequestDto) throws Exception {
+        trainService.startTrain(trainRequestDto);
+        return ResponseEntity.status(HttpStatus.OK).body("정상적으로 훈련이 시작되었습니다.");
     }
-
 }

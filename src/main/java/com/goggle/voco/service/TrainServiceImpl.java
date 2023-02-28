@@ -1,44 +1,44 @@
 package com.goggle.voco.service;
 
-import com.goggle.voco.domain.Train;
+import com.goggle.voco.domain.User;
 import com.goggle.voco.dto.TrainRequestDto;
 import com.goggle.voco.dto.TrainResponseDto;
-import com.goggle.voco.repository.TrainRepository;
+import com.goggle.voco.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.Optional;
+
 
 @Service
 @Log4j2
 @RequiredArgsConstructor
 public class TrainServiceImpl implements TrainService{
-    private final TrainRepository trainRepository;
+    private final UserRepository userRepository;
 
     @Override
-    public TrainResponseDto findTrainById(Long id) {
-        Train train = trainRepository.getReferenceById(id);
+    public void startTrain(TrainRequestDto trainRequestDto) throws Exception {
+        Optional<User> selectedUser = userRepository.findById(trainRequestDto.getUserId());
 
-        TrainResponseDto trainResponseDto = new TrainResponseDto();
-        trainResponseDto.setId(train.getId());
-        trainResponseDto.setText_id(train.getText_id());
-        trainResponseDto.setText(train.getText());
+        if(selectedUser.isPresent()){
+            User user = selectedUser.get();
+            WebClient client = WebClient.builder()
+                    .baseUrl("http://58.142.29.186:52424")
+                    .defaultCookie("cookieKey", "cookieValue")
+                    .build();
 
-        return trainResponseDto;
-    }
-
-    @Override
-    public TrainResponseDto createTrain(TrainRequestDto trainRequestDto) {
-        Train train = new Train();
-        train.setText_id(trainRequestDto.getText_id());
-        train.setText(trainRequestDto.getText());
-
-        trainRepository.save(train);
-
-        TrainResponseDto trainResponseDto = new TrainResponseDto();
-        trainResponseDto.setId(train.getId());
-        trainResponseDto.setText_id(train.getText_id());
-        trainResponseDto.setText(train.getText());
-
-        return trainResponseDto;
+            client.post()
+                    .uri("/train")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(trainRequestDto)
+                    .retrieve()
+                    .bodyToMono(TrainResponseDto.class)
+                    .subscribe(result -> {user.setIsRegistered(Boolean.TRUE); userRepository.save(user);});
+        } else {
+            throw new Exception();
+        }
     }
 }

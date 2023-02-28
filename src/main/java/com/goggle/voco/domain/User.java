@@ -10,6 +10,7 @@ import java.util.Collection;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,6 +28,7 @@ public class User extends BaseEntity implements UserDetails {
     @Column
     private String email;
     private String nickname;
+    private Boolean isRegistered;
 
     public User(String email, String nickname, String password) {
         this.email=email;

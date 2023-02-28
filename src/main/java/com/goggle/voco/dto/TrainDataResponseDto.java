@@ -9,6 +9,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TrainRequestDto {
-    private Long userId;
+public class TrainDataResponseDto {
+
+    private Long id;
+    private int text_id;
+    private String text;
+
 }
