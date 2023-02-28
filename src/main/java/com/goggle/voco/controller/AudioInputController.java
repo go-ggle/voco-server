@@ -31,7 +31,7 @@ public class AudioInputController {
     ) throws IOException {
 
         audioInputService.audioInput(user, textId, audio);
-        return ResponseEntity.status(HttpStatus.OK).body("정상적으로 삭제되었습니다.");
+        return ResponseEntity.status(HttpStatus.OK).body(textId + "번 음성이 입력되었습니다.");
     }
 
 }
