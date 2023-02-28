@@ -19,12 +19,12 @@ public class Project extends BaseEntity{
 
     @Column
     private String title;
-    private String language;
+    private Long language;
 
     @ManyToOne
     private Team team;
 
-    public Project(String language, String title, Team team) {
+    public Project(Long language, String title, Team team) {
         this.title = title;
         this.language = language;
         this.team = team;

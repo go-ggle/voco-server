@@ -4,6 +4,7 @@ import com.goggle.voco.dto.AudioInputRequestDto;
 import com.goggle.voco.dto.AudioInputResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
@@ -25,10 +26,15 @@ import java.io.IOException;
 @Log4j2
 @RequiredArgsConstructor
 public class AudioInputServiceImpl implements AudioInputService{
+    @Value("${AI_ADDRESS}")
+    private String AI_ADDRESS;
+    @Value("${FLASK_PORT}")
+    private String FLASK_PORT;
+
     @Override
     public AudioInputResponseDto audioInput(MultipartFile audio, AudioInputRequestDto audioInputRequestDto) throws IOException {
         WebClient client = WebClient.builder()
-                .baseUrl("http://58.142.29.186:52424")
+                .baseUrl("http://" + AI_ADDRESS + ":" + FLASK_PORT)
                 .defaultCookie("cookieKey", "cookieValue")
                 .build();
 

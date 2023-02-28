@@ -2,19 +2,22 @@ package com.goggle.voco.service;
 
 import com.goggle.voco.domain.Block;
 import com.goggle.voco.domain.Project;
-import com.goggle.voco.dto.AudioRequestDto;
-import com.goggle.voco.dto.BlockResponseDto;
+import com.goggle.voco.dto.*;
 import com.goggle.voco.repository.BlockRepository;
 import com.goggle.voco.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -24,27 +27,33 @@ public class BlockServiceImpl implements BlockService {
     private final BlockRepository blockRepository;
     private final ProjectRepository projectRepository;
 
+    @Value("${AUDIO_BUCKET_NAME}")
+    private String AUDIO_BUCKET_NAME;
+    @Value("${AWS_REGION}")
+    private String AWS_REGION;
+    @Value("${AI_ADDRESS}")
+    private String AI_ADDRESS;
+    @Value("${FLASK_PORT}")
+    private String FLASK_PORT;
+
     @Override
-    public String createAudio(String text, Long userId) {
+    public String createAudio(AudioRequestDto audioRequestDto) {
 
         URI uri = UriComponentsBuilder
-                .fromUriString("http://58.142.29.186:52424")
+                .fromUriString("http://" + AI_ADDRESS + ":" + FLASK_PORT)
                 .path("/tts")
                 .encode()
                 .build()
                 .toUri();
-
-        AudioRequestDto audioRequestDto = new AudioRequestDto();
-        audioRequestDto.setLanguage(0);
-        audioRequestDto.setText(text);
-        audioRequestDto.setUserId(userId);
 
         RestTemplate restTemplate = new RestTemplate();
 
         ResponseEntity<byte[]> audioEntity = restTemplate.postForEntity(uri, audioRequestDto, byte[].class);
         byte[] body = audioEntity.getBody();
 
-        String audioPath = "sample.wav";
+        Long projectId = audioRequestDto.getProjectId();
+        Long blockId = audioRequestDto.getBlockId();
+        String audioPath = "https://" + AUDIO_BUCKET_NAME + ".s3." + AWS_REGION + ".amazonaws.com/"+ projectId + "/" + blockId + ".wav";
 
         return audioPath;
     }
@@ -53,12 +62,62 @@ public class BlockServiceImpl implements BlockService {
     public BlockResponseDto createBlock(AudioRequestDto audioRequestDto, Long projectId) {
         String text = audioRequestDto.getText();
         Long userId = audioRequestDto.getUserId();
-        String audioPath = createAudio(text, userId);
+        audioRequestDto.setProjectId(projectId);
 
         Project project = projectRepository.findById(projectId).orElseThrow();
-        Block block = new Block(project, text, audioPath, userId);
+        Block block = new Block(project, text, "", userId);
         blockRepository.save(block);
 
+        audioRequestDto.setBlockId(block.getId());
+        String audioPath = createAudio(audioRequestDto);
+        block.setAudioPath(audioPath);
+
         return BlockResponseDto.from(block);
+    }
+
+    @Override
+    public BlocksResponseDto findBlocks(Long projectId) {
+        List<Block> blocks = blockRepository.findByProjectId(projectId);
+        List<BlockResponseDto> blocksResponseDtos = blocks.stream()
+                .map(block -> BlockResponseDto.from(block))
+                .collect(Collectors.toList());
+
+        return new BlocksResponseDto(blocksResponseDtos);
+    }
+
+    //TODO: 버켓에서 음성 삭제
+    @Override
+    public void deleteBlock(Long blockId) throws Exception {
+        Optional<Block> selectedBlock = blockRepository.findById(blockId);
+
+        if(selectedBlock.isPresent()){
+            Block block = selectedBlock.get();
+            blockRepository.delete(block);
+        }
+        else {
+            throw new Exception();
+        }
+    }
+
+    @Override
+    public BlockResponseDto updateBlock(AudioRequestDto audioRequestDto, Long blockId) throws Exception {
+        Optional<Block> selectedBlock = blockRepository.findById(blockId);
+
+        Block updatedBlock;
+        if (selectedBlock.isPresent()) {
+            Block block = selectedBlock.get();
+            audioRequestDto.setProjectId(block.getProject().getId());
+            audioRequestDto.setBlockId(block.getId());
+
+            block.setText(audioRequestDto.getText());
+            block.setAudioPath(createAudio(audioRequestDto));
+            block.setUpdatedAt(LocalDateTime.now());
+
+            updatedBlock = blockRepository.save(block);
+        } else {
+            throw new Exception();
+        }
+
+        return BlockResponseDto.from(updatedBlock);
     }
 }
