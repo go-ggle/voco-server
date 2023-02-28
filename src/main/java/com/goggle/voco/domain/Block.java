@@ -6,6 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,6 +21,7 @@ public class Block extends BaseEntity {
     private String text;
     private String audioPath;
     private Long userId;
+    private Long interval;
 
     @ManyToOne
     private Project project;
