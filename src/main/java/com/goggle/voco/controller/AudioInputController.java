@@ -24,15 +24,14 @@ public class AudioInputController {
     private final AudioInputService audioInputService;
 
     @PostMapping("/{textId}")
-    public ResponseEntity<AudioInputResponseDto> audioInput(
+    public ResponseEntity<String> audioInput(
             @AuthenticationPrincipal User user,
             @PathVariable("textId") Long textId,
             @RequestPart MultipartFile audio
     ) throws IOException {
 
-        AudioInputResponseDto audioInputResponseDto = audioInputService.audioInput(user, textId, audio);
-
-        return new ResponseEntity<>(audioInputResponseDto, HttpStatus.CREATED);
+        audioInputService.audioInput(user, textId, audio);
+        return ResponseEntity.status(HttpStatus.OK).body("정상적으로 삭제되었습니다.");
     }
 
 }

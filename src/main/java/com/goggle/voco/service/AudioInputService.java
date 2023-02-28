@@ -9,6 +9,6 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
 
 public interface AudioInputService{
-    public AudioInputResponseDto audioInput(User user, Long textId, MultipartFile audio) throws IOException;
+    public void audioInput(User user, Long textId, MultipartFile audio) throws IOException;
 }
 
