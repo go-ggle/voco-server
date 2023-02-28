@@ -13,4 +13,5 @@ public class AudioRequestDto {
     private Long userId;
     private Long blockId;
     private Long projectId;
+    private Long interval;
 }
