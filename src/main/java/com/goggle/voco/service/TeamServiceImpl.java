@@ -1,10 +1,13 @@
 package com.goggle.voco.service;
 
+import com.goggle.voco.domain.Project;
 import com.goggle.voco.domain.Team;
 import com.goggle.voco.domain.User;
 import com.goggle.voco.domain.Participation;
+import com.goggle.voco.dto.ProjectResponseDto;
 import com.goggle.voco.dto.TeamRequestDto;
 import com.goggle.voco.dto.TeamResponseDto;
+import com.goggle.voco.dto.TeamsResponseDto;
 import com.goggle.voco.repository.TeamRepository;
 import com.goggle.voco.repository.UserRepository;
 import com.goggle.voco.repository.ParticipationRepository;
@@ -12,8 +15,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -57,6 +62,16 @@ public class TeamServiceImpl implements TeamService {
             throw new Exception();
         }
         return TeamResponseDto.from(team);
+    }
+
+    @Override
+    public TeamsResponseDto findTeams(User user) throws Exception {
+        List<Team> teams = participationRepository.findTeamsByUserId(user.getId());
+        List<TeamResponseDto> teamResponseDtos = teams.stream()
+                .map(team -> TeamResponseDto.from(team))
+                .collect(Collectors.toList());
+
+        return new TeamsResponseDto(teamResponseDtos);
     }
 
     @Override
