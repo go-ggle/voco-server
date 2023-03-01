@@ -21,4 +21,9 @@ public class Participation extends BaseEntity {
     private User user;
     @ManyToOne
     private Team team;
+
+    public Participation(User user, Team team) {
+        this.user = user;
+        this.team = team;
+    }
 }
