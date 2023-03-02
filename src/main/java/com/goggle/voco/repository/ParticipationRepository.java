@@ -12,6 +12,7 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
     @Query("select t "
             + "from Participation p "
             + "join p.team t "
-            + "where p.user.id = :userId")
+            + "where p.user.id = :userId "
+            + "order by t.isPrivate desc")
     List<Team> findTeamsByUserId(Long userId);
 }
