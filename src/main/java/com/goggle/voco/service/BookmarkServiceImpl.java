@@ -12,7 +12,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Book;
 import java.util.Optional;
 
 @Service
@@ -30,42 +29,20 @@ public class BookmarkServiceImpl implements BookmarkService{
     }
 
     @Override
-    public BookmarkResponseDto createBookmark(Long projectId, BookmarkRequestDto bookmarkRequestDto) throws Exception {
-        Optional<Project> selectedProject = projectRepository.findById(projectId);
-        Optional<User> selectedUser = userRepository.findById(bookmarkRequestDto.getUserId());
+    public BookmarkResponseDto createBookmark(User user, Long projectId) throws Exception {
+        Project selectedProject = projectRepository.findById(projectId).orElseThrow();
+        User selectedUser = userRepository.findById(user.getId()).orElseThrow();
 
-        Bookmark bookmark = new Bookmark();
-        if(selectedProject.isPresent() && selectedUser.isPresent()){
-            Project project = selectedProject.get();
-            User user = selectedUser.get();
+        Bookmark bookmark = new Bookmark(selectedUser, selectedProject);
+        bookmarkRepository.save(bookmark);
 
-            bookmark.setProject(project);
-            bookmark.setUser(user);
-
-            bookmarkRepository.save(bookmark);
-        }
-        else{
-            throw new Exception();
-        }
-
-        BookmarkResponseDto bookmarkResponseDto = new BookmarkResponseDto();
-
-        bookmarkResponseDto.setId(bookmark.getId());
-        bookmarkResponseDto.setProjectId(projectId);
-
-        return bookmarkResponseDto;
+        return BookmarkResponseDto.from(bookmark);
     }
 
     @Override
-    public void deleteBookmark(Long projectId, BookmarkRequestDto bookmarkRequestDto) throws Exception {
-        Optional<Bookmark> selectedBookmark = bookmarkRepository.findByUserAndProject(bookmarkRequestDto.getUserId(), projectId);
+    public void deleteBookmark(User user, Long projectId) throws Exception {
+        Bookmark bookmark = bookmarkRepository.findByUserIdAndProjectId(user.getId(), projectId).orElseThrow();
 
-        if(selectedBookmark.isPresent()){
-            Bookmark bookmark = selectedBookmark.get();
-            bookmarkRepository.delete(bookmark);
-        }
-        else{
-            throw new Exception();
-        }
+        bookmarkRepository.delete(bookmark);
     }
 }
