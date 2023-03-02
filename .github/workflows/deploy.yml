@@ -25,7 +25,6 @@ jobs:
         shell: bash
         
       - uses: actions/checkout@v3
-      - run: touch ./src/main/resources/application.properties
       - run: echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application.properties
       - run: cat ./src/main/resources/application.properties
       
