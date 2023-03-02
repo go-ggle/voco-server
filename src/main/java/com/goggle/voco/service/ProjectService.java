@@ -10,4 +10,5 @@ public interface ProjectService {
     ProjectsResponseDto findProjects(Long teamId);
     ProjectResponseDto findProjectById(Long projectId);
     void deleteProject(Long projectId) throws Exception;
+    ProjectResponseDto updateProjectTitle(Long projectId, String title) throws Exception;
 }

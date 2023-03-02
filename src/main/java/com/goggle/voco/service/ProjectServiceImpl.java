@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -65,5 +66,15 @@ public class ProjectServiceImpl implements ProjectService{
         else{
             throw new Exception();
         }
+    }
+
+    @Override
+    public ProjectResponseDto updateProjectTitle(Long projectId, String title) throws Exception {
+        Project project = projectRepository.findById(projectId).orElseThrow(()->new Exception("존재하지 않는 프로젝트입니다."));
+        project.setTitle(title);
+        project.setUpdatedAt(LocalDateTime.now());
+        projectRepository.save(project);
+
+        return ProjectResponseDto.from(project);
     }
 }
