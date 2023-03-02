@@ -33,9 +33,7 @@ public class AuthServiceImpl implements AuthService {
         User user = new User(userRequestDto.getEmail(), userRequestDto.getNickname(), password);
         userRepository.save(user);
 
-        Team team = new Team();
-        team.setName(user.getNickname());
-        team.setPrivate(true);
+        Team team = new Team(user, true);
         teamRepository.save(team);
 
         Participation participation = new Participation(user, team);

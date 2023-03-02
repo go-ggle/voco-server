@@ -28,4 +28,9 @@ public class Team extends BaseEntity {
         this.name = name;
         this.teamCode = teamCode;
     }
+
+    public Team(User user, boolean isPrivate) {
+        this.name = user.getNickname();
+        this.isPrivate = isPrivate;
+    }
 }
