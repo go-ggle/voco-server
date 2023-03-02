@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.awt.print.Book;
 
 @Controller
 @RequestMapping("/bookmarks")
@@ -32,6 +31,7 @@ public class BookmarkController {
     @DeleteMapping("/{projectId}")
     public ResponseEntity<String> deleteProject(@PathVariable("projectId") Long projectId, BookmarkRequestDto bookmarkRequestDto) throws Exception {
         bookmarkService.deleteBookmark(projectId, bookmarkRequestDto);
+
         return ResponseEntity.status(HttpStatus.OK).body("정상적으로 북마크가 해제되었습니다.");
     }
 

@@ -3,6 +3,7 @@ package com.goggle.voco.controller;
 import com.goggle.voco.domain.User;
 import com.goggle.voco.dto.TeamRequestDto;
 import com.goggle.voco.dto.TeamResponseDto;
+import com.goggle.voco.dto.TeamsResponseDto;
 import com.goggle.voco.service.TeamService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -27,6 +28,14 @@ public class TeamController {
         TeamResponseDto teamResponseDto = teamService.createTeam(user, teamRequestDto);
 
         return new ResponseEntity<>(teamResponseDto, HttpStatus.CREATED);
+    }
+
+    @GetMapping("")
+    public ResponseEntity<TeamsResponseDto> findTeams(
+            @AuthenticationPrincipal User user) throws Exception {
+        TeamsResponseDto teamsResponseDto = teamService.findTeams(user);
+
+        return new ResponseEntity<>(teamsResponseDto, HttpStatus.OK);
     }
 
     @PostMapping("/{teamCode}")
