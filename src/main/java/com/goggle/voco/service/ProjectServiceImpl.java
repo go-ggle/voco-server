@@ -35,7 +35,7 @@ public class ProjectServiceImpl implements ProjectService{
 
     @Override
     public ProjectsResponseDto findProjects(Long teamId) {
-        List<Project> projects = projectRepository.findByTeamId(teamId);
+        List<Project> projects = projectRepository.findByTeamIdOrderByUpdatedAtDesc(teamId);
         List<ProjectResponseDto> projectResponseDtos = projects.stream()
                 .map(project -> ProjectResponseDto.from(project))
                 .collect(Collectors.toList());

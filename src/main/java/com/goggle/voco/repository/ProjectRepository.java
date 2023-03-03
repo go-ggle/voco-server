@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface ProjectRepository extends JpaRepository<Project, Long>{
     Optional<Project> findById(Long projectId);
-    List<Project> findByTeamId(Long teamId);
+    List<Project> findByTeamIdOrderByUpdatedAtDesc(Long teamId);
 }
 
