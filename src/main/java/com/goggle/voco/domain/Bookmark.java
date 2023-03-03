@@ -21,4 +21,9 @@ public class Bookmark extends BaseEntity {
     private User user;
     @ManyToOne
     private Project project;
+
+    public Bookmark(User user, Project project) {
+        this.user = user;
+        this.project = project;
+    }
 }

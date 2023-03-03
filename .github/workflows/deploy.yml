@@ -24,9 +24,11 @@ jobs:
         run: chmod +x ./gradlew
         shell: bash
         
-      - uses: actions/checkout@v3
-      - run: echo "${{ secrets.PROPERTIES }}" > ./src/main/resources/application.properties
-      - run: cat ./src/main/resources/application.properties
+      - name: Create properties file
+        run: |
+          mkdir ./src/main/resources
+          touch ./src/main/resources/application.properties
+          echo "${{ secrets.PROPERTIES }}" >> ./src/main/resources/application.properties
       
       - name: Build with Gradle
         run: ./gradlew build
