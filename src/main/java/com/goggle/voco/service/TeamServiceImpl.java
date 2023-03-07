@@ -6,6 +6,7 @@ import com.goggle.voco.domain.Participation;
 import com.goggle.voco.dto.TeamRequestDto;
 import com.goggle.voco.dto.TeamResponseDto;
 import com.goggle.voco.dto.TeamsResponseDto;
+import com.goggle.voco.exception.ErrorCode;
 import com.goggle.voco.exception.NotFoundException;
 import com.goggle.voco.repository.TeamRepository;
 import com.goggle.voco.repository.UserRepository;
@@ -64,7 +65,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public TeamsResponseDto findTeams(User user) throws Exception {
+    public TeamsResponseDto findTeams(User user) {
         List<Team> teams = participationRepository.findTeamsByUserId(user.getId());
         List<TeamResponseDto> teamResponseDtos = teams.stream()
                 .map(team -> TeamResponseDto.from(team))
@@ -75,7 +76,7 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public TeamResponseDto joinTeam(User user, String teamCode) {
-        Team team = teamRepository.findByTeamCode(teamCode).orElseThrow(()-> new NotFoundException("존재하지 않는 팀입니다."));
+        Team team = teamRepository.findByTeamCode(teamCode).orElseThrow(()-> new NotFoundException(ErrorCode.TEAM_NOT_FOUND));
 
         Participation participation = new Participation(user, team);
         participationRepository.save(participation);

@@ -3,6 +3,7 @@ package com.goggle.voco.service;
 import com.goggle.voco.domain.Block;
 import com.goggle.voco.domain.Project;
 import com.goggle.voco.dto.*;
+import com.goggle.voco.exception.ErrorCode;
 import com.goggle.voco.exception.NotFoundException;
 import com.goggle.voco.repository.BlockRepository;
 import com.goggle.voco.repository.ProjectRepository;
@@ -64,7 +65,7 @@ public class BlockServiceImpl implements BlockService {
         Long userId = audioRequestDto.getUserId();
         audioRequestDto.setProjectId(projectId);
 
-        Project project = projectRepository.findById(projectId).orElseThrow(()-> new NotFoundException("존재하지 않는 프로젝트입니다."));
+        Project project = projectRepository.findById(projectId).orElseThrow(()-> new NotFoundException(ErrorCode.PROJECT_NOT_FOUND));
         Block block = new Block(project, text, "", userId);
         blockRepository.save(block);
 
@@ -87,15 +88,15 @@ public class BlockServiceImpl implements BlockService {
 
     //TODO: 버켓에서 음성 삭제
     @Override
-    public void deleteBlock(Long blockId) throws Exception {
-        Block block = blockRepository.findById(blockId).orElseThrow(()->new NotFoundException("존재하지 않는 블럭입니다."));
+    public void deleteBlock(Long blockId) {
+        Block block = blockRepository.findById(blockId).orElseThrow(()->new NotFoundException(ErrorCode.BLOCK_NOT_FOUND));
 
         blockRepository.delete(block);
     }
 
     @Override
-    public BlockResponseDto updateBlock(AudioRequestDto audioRequestDto, Long blockId) throws Exception {
-        Block block = blockRepository.findById(blockId).orElseThrow(()->new NotFoundException("존재하지 않는 블럭입니다."));
+    public BlockResponseDto updateBlock(AudioRequestDto audioRequestDto, Long blockId) {
+        Block block = blockRepository.findById(blockId).orElseThrow(()->new NotFoundException(ErrorCode.BLOCK_NOT_FOUND));
 
         audioRequestDto.setProjectId(block.getProject().getId());
         audioRequestDto.setBlockId(block.getId());

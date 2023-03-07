@@ -5,6 +5,7 @@ import com.goggle.voco.domain.Project;
 import com.goggle.voco.domain.User;
 import com.goggle.voco.dto.BookmarkRequestDto;
 import com.goggle.voco.dto.BookmarkResponseDto;
+import com.goggle.voco.exception.ErrorCode;
 import com.goggle.voco.exception.NotFoundException;
 import com.goggle.voco.repository.BookmarkRepository;
 import com.goggle.voco.repository.ProjectRepository;
@@ -31,7 +32,7 @@ public class BookmarkServiceImpl implements BookmarkService{
 
     @Override
     public BookmarkResponseDto createBookmark(User user, Long projectId) {
-        Project project = projectRepository.findById(projectId).orElseThrow(()-> new NotFoundException("존재하지 않는 프로젝트입니다."));
+        Project project = projectRepository.findById(projectId).orElseThrow(()-> new NotFoundException(ErrorCode.PROJECT_NOT_FOUND));
 
         Bookmark bookmark = new Bookmark(user, project);
         bookmarkRepository.save(bookmark);
@@ -41,7 +42,7 @@ public class BookmarkServiceImpl implements BookmarkService{
 
     @Override
     public void deleteBookmark(User user, Long projectId) {
-        Project project = projectRepository.findById(projectId).orElseThrow(()-> new NotFoundException("존재하지 않는 프로젝트입니다."));
+        Project project = projectRepository.findById(projectId).orElseThrow(()-> new NotFoundException(ErrorCode.PROJECT_NOT_FOUND));
         Bookmark bookmark = bookmarkRepository.findByUserAndProject(user, project).orElseThrow();
 
         bookmarkRepository.delete(bookmark);

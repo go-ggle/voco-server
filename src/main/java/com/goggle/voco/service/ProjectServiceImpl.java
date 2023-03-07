@@ -2,10 +2,10 @@ package com.goggle.voco.service;
 
 import com.goggle.voco.domain.Project;
 import com.goggle.voco.domain.Team;
-import com.goggle.voco.domain.User;
 import com.goggle.voco.dto.ProjectRequestDto;
 import com.goggle.voco.dto.ProjectResponseDto;
 import com.goggle.voco.dto.ProjectsResponseDto;
+import com.goggle.voco.exception.ErrorCode;
 import com.goggle.voco.exception.NotFoundException;
 import com.goggle.voco.repository.ProjectRepository;
 import com.goggle.voco.repository.TeamRepository;
@@ -14,8 +14,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
+
 
 @Service
 @Log4j2
@@ -27,7 +27,7 @@ public class ProjectServiceImpl implements ProjectService{
 
     @Override
     public ProjectResponseDto createProject(ProjectRequestDto projectRequestDto, Long teamId) {
-        Team team = teamRepository.findById(teamId).orElseThrow(()->new NotFoundException("존재하지 않는 팀입니다."));
+        Team team = teamRepository.findById(teamId).orElseThrow(()->new NotFoundException(ErrorCode.TEAM_NOT_FOUND));
         Project project = new Project(projectRequestDto.getLanguage(), projectRequestDto.getTitle(), team);
         projectRepository.save(project);
 
@@ -36,7 +36,7 @@ public class ProjectServiceImpl implements ProjectService{
 
     @Override
     public ProjectsResponseDto findProjects(Long teamId) {
-        Team team = teamRepository.findById(teamId).orElseThrow(()->new NotFoundException("존재하지 않는 팀입니다."));
+        Team team = teamRepository.findById(teamId).orElseThrow(()->new NotFoundException(ErrorCode.TEAM_NOT_FOUND));
         List<Project> projects = projectRepository.findByTeamOrderByUpdatedAtDesc(team);
         List<ProjectResponseDto> projectResponseDtos = projects.stream()
                 .map(project -> ProjectResponseDto.from(project))
@@ -47,14 +47,14 @@ public class ProjectServiceImpl implements ProjectService{
 
     @Override
     public ProjectResponseDto findProjectById(Long projectId) {
-        Project project = projectRepository.findById(projectId).orElseThrow(()->new NotFoundException("존재하지 않는 프로젝트입니다."));
+        Project project = projectRepository.findById(projectId).orElseThrow(()->new NotFoundException(ErrorCode.PROJECT_NOT_FOUND));
 
         return ProjectResponseDto.from(project);
     }
 
     @Override
     public void deleteProject(Long projectId) {
-        Project project = projectRepository.findById(projectId).orElseThrow(()->new NotFoundException("존재하지 않는 프로젝트입니다."));
+        Project project = projectRepository.findById(projectId).orElseThrow(()->new NotFoundException(ErrorCode.PROJECT_NOT_FOUND));
 
         projectRepository.delete(project);
     }
