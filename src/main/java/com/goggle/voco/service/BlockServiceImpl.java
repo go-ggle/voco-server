@@ -3,6 +3,7 @@ package com.goggle.voco.service;
 import com.goggle.voco.domain.Block;
 import com.goggle.voco.domain.Project;
 import com.goggle.voco.dto.*;
+import com.goggle.voco.exception.NotFoundException;
 import com.goggle.voco.repository.BlockRepository;
 import com.goggle.voco.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,7 +64,7 @@ public class BlockServiceImpl implements BlockService {
         Long userId = audioRequestDto.getUserId();
         audioRequestDto.setProjectId(projectId);
 
-        Project project = projectRepository.findById(projectId).orElseThrow();
+        Project project = projectRepository.findById(projectId).orElseThrow(()-> new NotFoundException("존재하지 않는 프로젝트입니다."));
         Block block = new Block(project, text, "", userId);
         blockRepository.save(block);
 
@@ -88,36 +88,24 @@ public class BlockServiceImpl implements BlockService {
     //TODO: 버켓에서 음성 삭제
     @Override
     public void deleteBlock(Long blockId) throws Exception {
-        Optional<Block> selectedBlock = blockRepository.findById(blockId);
+        Block block = blockRepository.findById(blockId).orElseThrow(()->new NotFoundException("존재하지 않는 블럭입니다."));
 
-        if(selectedBlock.isPresent()){
-            Block block = selectedBlock.get();
-            blockRepository.delete(block);
-        }
-        else {
-            throw new Exception();
-        }
+        blockRepository.delete(block);
     }
 
     @Override
     public BlockResponseDto updateBlock(AudioRequestDto audioRequestDto, Long blockId) throws Exception {
-        Optional<Block> selectedBlock = blockRepository.findById(blockId);
+        Block block = blockRepository.findById(blockId).orElseThrow(()->new NotFoundException("존재하지 않는 블럭입니다."));
 
-        Block updatedBlock;
-        if (selectedBlock.isPresent()) {
-            Block block = selectedBlock.get();
-            audioRequestDto.setProjectId(block.getProject().getId());
-            audioRequestDto.setBlockId(block.getId());
+        audioRequestDto.setProjectId(block.getProject().getId());
+        audioRequestDto.setBlockId(block.getId());
 
-            block.setText(audioRequestDto.getText());
-            block.setAudioPath(createAudio(audioRequestDto));
-            block.setUpdatedAt(LocalDateTime.now());
+        block.setText(audioRequestDto.getText());
+        block.setAudioPath(createAudio(audioRequestDto));
+        block.setUpdatedAt(LocalDateTime.now());
 
-            updatedBlock = blockRepository.save(block);
-        } else {
-            throw new Exception();
-        }
+        blockRepository.save(block);
 
-        return BlockResponseDto.from(updatedBlock);
+        return BlockResponseDto.from(block);
     }
 }

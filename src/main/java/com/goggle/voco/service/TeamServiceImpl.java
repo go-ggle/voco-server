@@ -1,13 +1,12 @@
 package com.goggle.voco.service;
 
-import com.goggle.voco.domain.Project;
 import com.goggle.voco.domain.Team;
 import com.goggle.voco.domain.User;
 import com.goggle.voco.domain.Participation;
-import com.goggle.voco.dto.ProjectResponseDto;
 import com.goggle.voco.dto.TeamRequestDto;
 import com.goggle.voco.dto.TeamResponseDto;
 import com.goggle.voco.dto.TeamsResponseDto;
+import com.goggle.voco.exception.NotFoundException;
 import com.goggle.voco.repository.TeamRepository;
 import com.goggle.voco.repository.UserRepository;
 import com.goggle.voco.repository.ParticipationRepository;
@@ -75,21 +74,12 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public TeamResponseDto joinTeam(User user, String teamCode) throws Exception {
-        Optional<Team> selectedTeam = teamRepository.findByTeamCode(teamCode);
-        Optional<User> selectedUser = userRepository.findById(user.getId());
+    public TeamResponseDto joinTeam(User user, String teamCode) {
+        Team team = teamRepository.findByTeamCode(teamCode).orElseThrow(()-> new NotFoundException("존재하지 않는 팀입니다."));
 
-        Participation participation = new Participation();
-        if(selectedTeam.isPresent() && selectedUser.isPresent()){
-            participation.setTeam(selectedTeam.get());
-            participation.setUser(selectedUser.get());
+        Participation participation = new Participation(user, team);
+        participationRepository.save(participation);
 
-            participationRepository.save(participation);
-        }
-        else{
-            throw new Exception();
-        }
-
-        return TeamResponseDto.from(selectedTeam.get());
+        return TeamResponseDto.from(team);
     }
 }
