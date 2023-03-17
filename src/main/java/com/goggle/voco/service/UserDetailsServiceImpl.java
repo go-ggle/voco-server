@@ -1,5 +1,8 @@
 package com.goggle.voco.service;
 
+import com.goggle.voco.exception.BadRequestException;
+import com.goggle.voco.exception.ErrorCode;
+import com.goggle.voco.exception.NotFoundException;
 import com.goggle.voco.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -15,7 +18,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(Long username) throws UsernameNotFoundException {
-        return userRepository.findById(username).orElseThrow();
+    public UserDetails loadUserByUserId(Long userId) throws UsernameNotFoundException {
+        return userRepository.findById(userId).orElseThrow(()->new BadRequestException(ErrorCode.INVALID_AUTH_TOKEN));
     }
 }
