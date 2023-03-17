@@ -8,7 +8,10 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErrorCode {
     //401 UNAUTHORIZED
-    INVALID_AUTH_TOKEN(HttpStatus.UNAUTHORIZED, "올바르지 않은 토큰입니다."),
+    INVALID_AUTH_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
+
+    //400 BAD REQUEST
+    INVALID_USER(HttpStatus.BAD_REQUEST, "유효하지 않은 유저입니다."),
 
     //404 NOT_FOUND
     TEAM_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 팀이 존재하지 않습니다."),

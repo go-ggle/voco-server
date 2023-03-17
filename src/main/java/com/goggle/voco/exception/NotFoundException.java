@@ -6,6 +6,6 @@ public class NotFoundException extends CustomException{
 
     public NotFoundException(ErrorCode errorCode) {
 
-        super(errorCode.getHttpStatus(), errorCode.getMessage());
+        super(HttpStatus.NOT_FOUND, errorCode.getMessage());
     }
 }
