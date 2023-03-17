@@ -5,6 +5,8 @@ import com.goggle.voco.domain.Project;
 import com.goggle.voco.domain.User;
 import com.goggle.voco.dto.BookmarkRequestDto;
 import com.goggle.voco.dto.BookmarkResponseDto;
+import com.goggle.voco.exception.ErrorCode;
+import com.goggle.voco.exception.NotFoundException;
 import com.goggle.voco.repository.BookmarkRepository;
 import com.goggle.voco.repository.ProjectRepository;
 import com.goggle.voco.repository.UserRepository;
@@ -29,19 +31,19 @@ public class BookmarkServiceImpl implements BookmarkService{
     }
 
     @Override
-    public BookmarkResponseDto createBookmark(User user, Long projectId) throws Exception {
-        Project selectedProject = projectRepository.findById(projectId).orElseThrow();
-        User selectedUser = userRepository.findById(user.getId()).orElseThrow();
+    public BookmarkResponseDto createBookmark(User user, Long projectId) {
+        Project project = projectRepository.findById(projectId).orElseThrow(()-> new NotFoundException(ErrorCode.PROJECT_NOT_FOUND));
 
-        Bookmark bookmark = new Bookmark(selectedUser, selectedProject);
+        Bookmark bookmark = new Bookmark(user, project);
         bookmarkRepository.save(bookmark);
 
         return BookmarkResponseDto.from(bookmark);
     }
 
     @Override
-    public void deleteBookmark(User user, Long projectId) throws Exception {
-        Bookmark bookmark = bookmarkRepository.findByUserIdAndProjectId(user.getId(), projectId).orElseThrow();
+    public void deleteBookmark(User user, Long projectId) {
+        Project project = projectRepository.findById(projectId).orElseThrow(()-> new NotFoundException(ErrorCode.PROJECT_NOT_FOUND));
+        Bookmark bookmark = bookmarkRepository.findByUserAndProject(user, project).orElseThrow();
 
         bookmarkRepository.delete(bookmark);
     }

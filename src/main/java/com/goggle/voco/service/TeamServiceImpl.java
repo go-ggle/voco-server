@@ -1,13 +1,14 @@
 package com.goggle.voco.service;
 
-import com.goggle.voco.domain.Project;
 import com.goggle.voco.domain.Team;
 import com.goggle.voco.domain.User;
 import com.goggle.voco.domain.Participation;
-import com.goggle.voco.dto.ProjectResponseDto;
 import com.goggle.voco.dto.TeamRequestDto;
 import com.goggle.voco.dto.TeamResponseDto;
 import com.goggle.voco.dto.TeamsResponseDto;
+import com.goggle.voco.exception.BadRequestException;
+import com.goggle.voco.exception.ErrorCode;
+import com.goggle.voco.exception.NotFoundException;
 import com.goggle.voco.repository.TeamRepository;
 import com.goggle.voco.repository.UserRepository;
 import com.goggle.voco.repository.ParticipationRepository;
@@ -65,7 +66,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public TeamsResponseDto findTeams(User user) throws Exception {
+    public TeamsResponseDto findTeams(User user) {
         List<Team> teams = participationRepository.findTeamsByUserId(user.getId());
         List<TeamResponseDto> teamResponseDtos = teams.stream()
                 .map(team -> TeamResponseDto.from(team))
@@ -75,21 +76,12 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public TeamResponseDto joinTeam(User user, String teamCode) throws Exception {
-        Optional<Team> selectedTeam = teamRepository.findByTeamCode(teamCode);
-        Optional<User> selectedUser = userRepository.findById(user.getId());
+    public TeamResponseDto joinTeam(User user, String teamCode) {
+        Team team = teamRepository.findByTeamCode(teamCode).orElseThrow(()-> new NotFoundException(ErrorCode.TEAM_NOT_FOUND));
 
-        Participation participation = new Participation();
-        if(selectedTeam.isPresent() && selectedUser.isPresent()){
-            participation.setTeam(selectedTeam.get());
-            participation.setUser(selectedUser.get());
+        Participation participation = new Participation(user, team);
+        participationRepository.save(participation);
 
-            participationRepository.save(participation);
-        }
-        else{
-            throw new Exception();
-        }
-
-        return TeamResponseDto.from(selectedTeam.get());
+        return TeamResponseDto.from(team);
     }
 }
