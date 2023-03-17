@@ -6,6 +6,7 @@ import com.goggle.voco.domain.Participation;
 import com.goggle.voco.dto.TeamRequestDto;
 import com.goggle.voco.dto.TeamResponseDto;
 import com.goggle.voco.dto.TeamsResponseDto;
+import com.goggle.voco.exception.BadRequestException;
 import com.goggle.voco.exception.ErrorCode;
 import com.goggle.voco.exception.NotFoundException;
 import com.goggle.voco.repository.TeamRepository;

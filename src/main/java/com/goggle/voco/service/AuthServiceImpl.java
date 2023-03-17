@@ -7,6 +7,8 @@ import com.goggle.voco.domain.User;
 import com.goggle.voco.dto.TokenRequestDto;
 import com.goggle.voco.dto.TokenResponseDto;
 import com.goggle.voco.dto.UserRequestDto;
+import com.goggle.voco.exception.BadRequestException;
+import com.goggle.voco.exception.ErrorCode;
 import com.goggle.voco.repository.ParticipationRepository;
 import com.goggle.voco.repository.TeamRepository;
 import com.goggle.voco.repository.UserRepository;
@@ -44,10 +46,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public TokenResponseDto createToken(TokenRequestDto tokenRequestDto) {
-        User user = userRepository.findByEmail(tokenRequestDto.getEmail()).orElseThrow();
+        User user = userRepository.findByEmail(tokenRequestDto.getEmail()).orElseThrow(() -> new BadRequestException(ErrorCode.INVALID_USER));
 
         if (!passwordEncoder.matches(tokenRequestDto.getPassword(), user.getPassword())) {
-            throw new RuntimeException();
+            throw new BadRequestException(ErrorCode.INVALID_USER);
         }
 
         String accessToken = jwtTokenProvider.createToken(String.valueOf(user.getId()));

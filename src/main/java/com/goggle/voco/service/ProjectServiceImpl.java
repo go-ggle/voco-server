@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Service
 @Log4j2
 @RequiredArgsConstructor
-public class ProjectServiceImpl implements ProjectService{
+public class    ProjectServiceImpl implements ProjectService{
 
     private final ProjectRepository projectRepository;
     private final TeamRepository teamRepository;
