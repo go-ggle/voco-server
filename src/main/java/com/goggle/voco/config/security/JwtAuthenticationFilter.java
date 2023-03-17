@@ -1,5 +1,7 @@
 package com.goggle.voco.config.security;
 
+import com.goggle.voco.exception.ErrorCode;
+import com.goggle.voco.exception.UnauthorizedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -26,7 +28,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String token = jwtTokenProvider.resolveToken(servletRequest);
 
-        if(token!=null && jwtTokenProvider.validateToken(token)) {
+        if(token!=null) {
+            if(!jwtTokenProvider.validateToken(token)) {
+                throw new UnauthorizedException(ErrorCode.INVALID_AUTH_TOKEN);
+            }
             Authentication authentication = jwtTokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
