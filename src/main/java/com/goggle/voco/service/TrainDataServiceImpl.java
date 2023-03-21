@@ -20,7 +20,7 @@ public class TrainDataServiceImpl implements TrainDataService {
 
         TrainDataResponseDto trainDataResponseDto = new TrainDataResponseDto();
         trainDataResponseDto.setId(train.getId());
-        trainDataResponseDto.setText_id(train.getText_id());
+        trainDataResponseDto.setText_id(train.getTextId());
         trainDataResponseDto.setText(train.getText());
 
         return trainDataResponseDto;
@@ -29,14 +29,14 @@ public class TrainDataServiceImpl implements TrainDataService {
     @Override
     public TrainDataResponseDto createTrain(TrainDataRequestDto trainDataRequestDto) {
         Train train = new Train();
-        train.setText_id(trainDataRequestDto.getTextId());
+        train.setTextId(trainDataRequestDto.getTextId());
         train.setText(trainDataRequestDto.getText());
 
         trainRepository.save(train);
 
         TrainDataResponseDto trainDataResponseDto = new TrainDataResponseDto();
         trainDataResponseDto.setId(train.getId());
-        trainDataResponseDto.setText_id(train.getText_id());
+        trainDataResponseDto.setText_id(train.getTextId());
         trainDataResponseDto.setText(train.getText());
 
         return trainDataResponseDto;

@@ -18,7 +18,7 @@ public class Train extends BaseEntity{
     private Long id;
 
     @Column
-    private int text_id;
+    private int textId;
     private String text;
 
 }
