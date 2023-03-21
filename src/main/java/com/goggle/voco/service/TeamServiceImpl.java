@@ -5,7 +5,7 @@ import com.goggle.voco.domain.User;
 import com.goggle.voco.domain.Participation;
 import com.goggle.voco.dto.TeamRequestDto;
 import com.goggle.voco.dto.TeamResponseDto;
-import com.goggle.voco.dto.TeamsResponseDto;
+import com.goggle.voco.dto.VoiceResponseDto;
 import com.goggle.voco.exception.BadRequestException;
 import com.goggle.voco.exception.ErrorCode;
 import com.goggle.voco.exception.NotFoundException;
@@ -66,13 +66,13 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public TeamsResponseDto findTeams(User user) {
+    public List<TeamResponseDto> findTeams(User user) {
         List<Team> teams = participationRepository.findTeamsByUserId(user.getId());
         List<TeamResponseDto> teamResponseDtos = teams.stream()
                 .map(team -> TeamResponseDto.from(team))
                 .collect(Collectors.toList());
 
-        return new TeamsResponseDto(teamResponseDtos);
+        return teamResponseDtos;
     }
 
     @Override
@@ -83,5 +83,18 @@ public class TeamServiceImpl implements TeamService {
         participationRepository.save(participation);
 
         return TeamResponseDto.from(team);
+    }
+
+    @Override
+    public List<VoiceResponseDto> findRegisteredTeamMembers(Long teamId) {
+        Team team = teamRepository.findById(teamId).orElseThrow(()-> new NotFoundException(ErrorCode.TEAM_NOT_FOUND));
+
+        List<User> registeredUsers = participationRepository.findRegisteredUsersByTeam(team);
+
+        List<VoiceResponseDto> voiceResponseDtos = registeredUsers.stream()
+                .map(user -> VoiceResponseDto.from(user))
+                .collect(Collectors.toList());
+
+        return voiceResponseDtos;
     }
 }

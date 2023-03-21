@@ -62,11 +62,11 @@ public class BlockServiceImpl implements BlockService {
     @Override
     public BlockResponseDto createBlock(AudioRequestDto audioRequestDto, Long projectId) {
         String text = audioRequestDto.getText();
-        Long userId = audioRequestDto.getUserId();
+        Long voiceId = audioRequestDto.getVoiceId();
         audioRequestDto.setProjectId(projectId);
 
         Project project = projectRepository.findById(projectId).orElseThrow(()-> new NotFoundException(ErrorCode.PROJECT_NOT_FOUND));
-        Block block = new Block(project, text, "", userId);
+        Block block = new Block(project, text, "", voiceId);
         blockRepository.save(block);
 
         audioRequestDto.setBlockId(block.getId());
