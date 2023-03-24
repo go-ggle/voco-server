@@ -60,6 +60,11 @@ public class BlockServiceImpl implements BlockService {
     }
 
     @Override
+    public void mergeBlocks(Long projectId){
+
+    }
+
+    @Override
     public BlockResponseDto createBlock(AudioRequestDto audioRequestDto, Long projectId) {
         String text = audioRequestDto.getText();
         Long userId = audioRequestDto.getUserId();
