@@ -54,19 +54,22 @@ public class BlockServiceImpl implements BlockService {
 
         Long projectId = audioRequestDto.getProjectId();
         Long blockId = audioRequestDto.getBlockId();
-        String audioPath = "https://" + AUDIO_BUCKET_NAME + ".s3." + AWS_REGION + ".amazonaws.com/"+ projectId + "/" + blockId + ".wav";
+        Long teamId = audioRequestDto.getTeamId();
+
+        String audioPath = "https://" + AUDIO_BUCKET_NAME + ".s3." + AWS_REGION + ".amazonaws.com/" + teamId + "/" + projectId + "/" + blockId + ".wav";
 
         return audioPath;
     }
 
     @Override
-    public BlockResponseDto createBlock(AudioRequestDto audioRequestDto, Long projectId) {
+    public BlockResponseDto createBlock(AudioRequestDto audioRequestDto, Long teamId, Long projectId) {
         String text = audioRequestDto.getText();
-        Long userId = audioRequestDto.getUserId();
+        Long voiceId = audioRequestDto.getVoiceId();
         audioRequestDto.setProjectId(projectId);
+        audioRequestDto.setTeamId(teamId);
 
         Project project = projectRepository.findById(projectId).orElseThrow(()-> new NotFoundException(ErrorCode.PROJECT_NOT_FOUND));
-        Block block = new Block(project, text, "", userId);
+        Block block = new Block(project, text, "", voiceId);
         blockRepository.save(block);
 
         audioRequestDto.setBlockId(block.getId());
@@ -95,7 +98,7 @@ public class BlockServiceImpl implements BlockService {
     }
 
     @Override
-    public BlockResponseDto updateBlock(AudioRequestDto audioRequestDto, Long blockId) {
+    public BlockResponseDto updateBlock(AudioRequestDto audioRequestDto, Long teamId, Long blockId) {
         Block block = blockRepository.findById(blockId).orElseThrow(()->new NotFoundException(ErrorCode.BLOCK_NOT_FOUND));
 
         audioRequestDto.setProjectId(block.getProject().getId());

@@ -22,8 +22,11 @@ public class BlockController {
     private final BlockService blockService;
 
     @PostMapping("")
-    public ResponseEntity<BlockResponseDto> createBlock(@RequestBody AudioRequestDto audioRequestDto, @PathVariable("projectId") Long projectId) {
-        BlockResponseDto blockResponseDto = blockService.createBlock(audioRequestDto, projectId);
+    public ResponseEntity<BlockResponseDto> createBlock(
+            @RequestBody AudioRequestDto audioRequestDto,
+            @PathVariable("teamId") Long teamId,
+            @PathVariable("projectId") Long projectId) {
+        BlockResponseDto blockResponseDto = blockService.createBlock(audioRequestDto, teamId, projectId);
 
         return new ResponseEntity<>(blockResponseDto, HttpStatus.CREATED);
     }
@@ -38,14 +41,18 @@ public class BlockController {
     }
 
     @DeleteMapping("/{blockId}")
-    public ResponseEntity<String> deleteBlock(@PathVariable("blockId") Long blockId) throws Exception {
+    public ResponseEntity<String> deleteBlock(
+            @PathVariable("blockId") Long blockId) throws Exception {
         blockService.deleteBlock(blockId);
         return ResponseEntity.status(HttpStatus.OK).body("정상적으로 삭제되었습니다.");
     }
 
     @PatchMapping("/{blockId}")
-    public ResponseEntity<BlockResponseDto> updateBlock(@RequestBody AudioRequestDto audioRequestDto, @PathVariable("blockId") Long blockId) throws Exception{
-        BlockResponseDto blockResponseDto = blockService.updateBlock(audioRequestDto, blockId);
+    public ResponseEntity<BlockResponseDto> updateBlock(
+            @RequestBody AudioRequestDto audioRequestDto,
+            @PathVariable("teamId") Long teamId,
+            @PathVariable("blockId") Long blockId) throws Exception{
+        BlockResponseDto blockResponseDto = blockService.updateBlock(audioRequestDto, teamId, blockId);
         return new ResponseEntity<>(blockResponseDto, HttpStatus.OK);
     }
 }
