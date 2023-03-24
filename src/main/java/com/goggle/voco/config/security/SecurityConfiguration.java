@@ -40,7 +40,7 @@ public class SecurityConfiguration {
     }
 
     public void configure(WebSecurity webSecurity) throws Exception {
-        webSecurity.ignoring().antMatchers("");
+        webSecurity.ignoring().antMatchers("", "/v2/api-docs", "/swagger-resources/**", "/swagger-ui/**", "/webjars/**");
     }
 
     @Bean
