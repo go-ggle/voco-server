@@ -49,10 +49,15 @@ public class BlockServiceImpl implements BlockService {
 
     @Override
     public String createAudio(AudioRequestDto audioRequestDto, Long teamId) {
+        Long projectId = audioRequestDto.getProjectId();
+        Long blockId = audioRequestDto.getBlockId();
 
         URI uri = UriComponentsBuilder
                 .fromUriString("http://" + AI_ADDRESS + ":" + FLASK_PORT)
                 .path("/tts")
+                .queryParam("teamId", teamId)
+                .queryParam("projectId", projectId)
+                .queryParam("blockId", blockId)
                 .encode()
                 .build()
                 .toUri();
@@ -62,8 +67,6 @@ public class BlockServiceImpl implements BlockService {
         ResponseEntity<byte[]> audioEntity = restTemplate.postForEntity(uri, audioRequestDto, byte[].class);
         byte[] body = audioEntity.getBody();
 
-        Long projectId = audioRequestDto.getProjectId();
-        Long blockId = audioRequestDto.getBlockId();
         String audioPath = "https://" + AUDIO_BUCKET_NAME + ".s3." + AWS_REGION + ".amazonaws.com/" + teamId + "/" + projectId + "/" + blockId + ".wav";
 
         return audioPath;
@@ -101,7 +104,7 @@ public class BlockServiceImpl implements BlockService {
     @Override
     public BlockResponseDto createBlock(AudioRequestDto audioRequestDto, Long teamId, Long projectId) {
         String text = audioRequestDto.getText();
-        Long userId = audioRequestDto.getUserId();
+        Long userId = audioRequestDto.getVoiceId();
         audioRequestDto.setProjectId(projectId);
 
         Project project = projectRepository.findById(projectId).orElseThrow(()-> new NotFoundException(ErrorCode.PROJECT_NOT_FOUND));
