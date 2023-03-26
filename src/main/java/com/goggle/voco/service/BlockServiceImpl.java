@@ -48,7 +48,7 @@ public class BlockServiceImpl implements BlockService {
     private String FLASK_PORT;
 
     @Override
-    public String createAudio(AudioRequestDto audioRequestDto) {
+    public String createAudio(AudioRequestDto audioRequestDto, Long teamId) {
 
         URI uri = UriComponentsBuilder
                 .fromUriString("http://" + AI_ADDRESS + ":" + FLASK_PORT)
@@ -64,7 +64,7 @@ public class BlockServiceImpl implements BlockService {
 
         Long projectId = audioRequestDto.getProjectId();
         Long blockId = audioRequestDto.getBlockId();
-        String audioPath = "https://" + AUDIO_BUCKET_NAME + ".s3." + AWS_REGION + ".amazonaws.com/"+ projectId + "/" + blockId + ".wav";
+        String audioPath = "https://" + AUDIO_BUCKET_NAME + ".s3." + AWS_REGION + ".amazonaws.com/" + teamId + "/" + projectId + "/" + blockId + ".wav";
 
         return audioPath;
     }
@@ -99,7 +99,7 @@ public class BlockServiceImpl implements BlockService {
     }
 
     @Override
-    public BlockResponseDto createBlock(AudioRequestDto audioRequestDto, Long projectId) {
+    public BlockResponseDto createBlock(AudioRequestDto audioRequestDto, Long teamId, Long projectId) {
         String text = audioRequestDto.getText();
         Long userId = audioRequestDto.getUserId();
         audioRequestDto.setProjectId(projectId);
@@ -109,7 +109,7 @@ public class BlockServiceImpl implements BlockService {
         blockRepository.save(block);
 
         audioRequestDto.setBlockId(block.getId());
-        String audioPath = createAudio(audioRequestDto);
+        String audioPath = createAudio(audioRequestDto, teamId);
         block.setAudioPath(audioPath);
 
         return BlockResponseDto.from(block);
@@ -134,14 +134,14 @@ public class BlockServiceImpl implements BlockService {
     }
 
     @Override
-    public BlockResponseDto updateBlock(AudioRequestDto audioRequestDto, Long blockId) {
+    public BlockResponseDto updateBlock(AudioRequestDto audioRequestDto, Long teamId, Long blockId) {
         Block block = blockRepository.findById(blockId).orElseThrow(()->new NotFoundException(ErrorCode.BLOCK_NOT_FOUND));
 
         audioRequestDto.setProjectId(block.getProject().getId());
         audioRequestDto.setBlockId(block.getId());
 
         block.setText(audioRequestDto.getText());
-        block.setAudioPath(createAudio(audioRequestDto));
+        block.setAudioPath(createAudio(audioRequestDto, teamId));
         block.setUpdatedAt(LocalDateTime.now());
         mergeBlocks(audioRequestDto.getProjectId());
 
