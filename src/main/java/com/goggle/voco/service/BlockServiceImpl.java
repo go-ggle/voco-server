@@ -20,6 +20,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.*;
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -76,38 +78,40 @@ public class BlockServiceImpl implements BlockService {
 
     @Override
     public void mergeBlocks(Long teamId, Long projectId){
-        List<Block> blocks = blockRepository.findByProjectId(projectId);
         try {
-            FileOutputStream fos1 = new FileOutputStream(new File("temp1.wav"));
-            S3Object o = amazonS3Client.getObject(AUDIO_BUCKET_NAME, teamId + "/" + projectId + "/" + blocks.get(0).getId() + ".wav");
-            S3ObjectInputStream s3is = o.getObjectContent();
-            byte[] read_buf = new byte[1024];
-            int read_len = 0;
-            while ((read_len = s3is.read(read_buf)) > 0) {
-                fos1.write(read_buf, 0, read_len);
-            }
-            for(int i=1; i<blocks.size(); i++){
-                FileOutputStream fos2 = new FileOutputStream(new File("temp2.wav"));
-                o = amazonS3Client.getObject(AUDIO_BUCKET_NAME, teamId + "/" + projectId + "/" + blocks.get(i).getId() + ".wav");
-                System.out.println(blocks.get(i).getId());
-                s3is = o.getObjectContent();
-                read_buf = new byte[1024];
-                read_len = 0;
+            List<Block> blocks = blockRepository.findByProjectId(projectId);
+            long length = 0;
+            AudioInputStream clip = null;
+            List<AudioInputStream> list = new ArrayList<AudioInputStream>();
+
+            for (Block b: blocks) {
+                FileOutputStream fos = new FileOutputStream(new File("temp" + b.getId() + ".wav"));
+                S3Object o = amazonS3Client.getObject(AUDIO_BUCKET_NAME, teamId + "/" + projectId + "/" + b.getId() + ".wav");
+                S3ObjectInputStream s3is = o.getObjectContent();
+                byte[] read_buf = new byte[1024];
+                int read_len = 0;
                 while ((read_len = s3is.read(read_buf)) > 0) {
-                    fos2.write(read_buf, 0, read_len);
+                    fos.write(read_buf, 0, read_len);
                 }
-                s3is.close();
-                fos2.close();
+                fos.close();
 
-                AudioInputStream clip1 = AudioSystem.getAudioInputStream(new File("temp1.wav"));
-                AudioInputStream clip2 = AudioSystem.getAudioInputStream(new File("temp2.wav"));
-
-                AudioInputStream appendedFiles = new AudioInputStream(new SequenceInputStream(clip1, clip2), clip2.getFormat(), clip1.getFrameLength() + clip2.getFrameLength());
-
-                AudioSystem.write(appendedFiles, AudioFileFormat.Type.WAVE, new File("temp1.wav"));
+                clip = AudioSystem.getAudioInputStream(new File("temp" + b.getId() + ".wav"));
+                list.add(clip);
+                length += clip.getFrameLength();
             }
-            fos1.close();
-            amazonS3Client.putObject(AUDIO_BUCKET_NAME, teamId + "/" + projectId + "/0.wav", new File("temp1.wav"));
+
+            if(length>0 && list.size()>0 && clip!=null) {
+                AudioInputStream appendedFiles =
+                        new AudioInputStream(
+                                new SequenceInputStream(Collections.enumeration(list)),
+                                clip.getFormat(),
+                                length);
+
+                AudioSystem.write(appendedFiles,
+                        AudioFileFormat.Type.WAVE,
+                        new File("appended.wav"));
+            }
+            amazonS3Client.putObject(AUDIO_BUCKET_NAME, teamId + "/" + projectId + "/0.wav", new File("appended.wav"));
         } catch (AmazonServiceException e) {
             System.err.println(e.getErrorMessage());
             System.exit(1);
