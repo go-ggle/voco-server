@@ -7,7 +7,7 @@ import com.goggle.voco.dto.ProjectsResponseDto;
 
 public interface BlockService {
     String createAudio(AudioRequestDto audioRequestDto, Long teamId);
-    void mergeBlocks(Long projectId);
+    void mergeBlocks(Long teamId, Long projectId);
     BlockResponseDto createBlock(AudioRequestDto audioRequestDto, Long teamId, Long projectId);
     BlocksResponseDto findBlocks(Long projectId);
     void deleteBlock(Long blockId) throws Exception;

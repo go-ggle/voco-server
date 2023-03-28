@@ -17,10 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,6 +25,11 @@ import java.util.stream.Collectors;
 
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
+
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 @Service
 @Log4j2
@@ -73,31 +75,51 @@ public class BlockServiceImpl implements BlockService {
     }
 
     @Override
-    public void mergeBlocks(Long projectId){
+    public void mergeBlocks(Long teamId, Long projectId){
         List<Block> blocks = blockRepository.findByProjectId(projectId);
         try {
-            FileOutputStream fos = new FileOutputStream(new File("temp.wav"));
-            for(Block b: blocks){
-                S3Object o = amazonS3Client.getObject(AUDIO_BUCKET_NAME, projectId + "/" + b.getId());
-                S3ObjectInputStream s3is = o.getObjectContent();
-                byte[] read_buf = new byte[1024];
-                int read_len = 0;
+            FileOutputStream fos1 = new FileOutputStream(new File("temp1.wav"));
+            S3Object o = amazonS3Client.getObject(AUDIO_BUCKET_NAME, teamId + "/" + projectId + "/" + blocks.get(0).getId() + ".wav");
+            S3ObjectInputStream s3is = o.getObjectContent();
+            byte[] read_buf = new byte[1024];
+            int read_len = 0;
+            while ((read_len = s3is.read(read_buf)) > 0) {
+                fos1.write(read_buf, 0, read_len);
+            }
+            for(int i=1; i<blocks.size(); i++){
+                FileOutputStream fos2 = new FileOutputStream(new File("temp2.wav"));
+                o = amazonS3Client.getObject(AUDIO_BUCKET_NAME, teamId + "/" + projectId + "/" + blocks.get(i).getId() + ".wav");
+                System.out.println(blocks.get(i).getId());
+                s3is = o.getObjectContent();
+                read_buf = new byte[1024];
+                read_len = 0;
                 while ((read_len = s3is.read(read_buf)) > 0) {
-                    fos.write(read_buf, 0, read_len);
+                    fos2.write(read_buf, 0, read_len);
                 }
                 s3is.close();
+                fos2.close();
+
+                AudioInputStream clip1 = AudioSystem.getAudioInputStream(new File("temp1.wav"));
+                AudioInputStream clip2 = AudioSystem.getAudioInputStream(new File("temp2.wav"));
+
+                AudioInputStream appendedFiles = new AudioInputStream(new SequenceInputStream(clip1, clip2), clip2.getFormat(), clip1.getFrameLength() + clip2.getFrameLength());
+
+                AudioSystem.write(appendedFiles, AudioFileFormat.Type.WAVE, new File("temp1.wav"));
             }
-            fos.close();
-            amazonS3Client.putObject(AUDIO_BUCKET_NAME, projectId + "/0", new File("temp.wav"));
+            fos1.close();
+            amazonS3Client.putObject(AUDIO_BUCKET_NAME, teamId + "/" + projectId + "/0.wav", new File("temp1.wav"));
         } catch (AmazonServiceException e) {
             System.err.println(e.getErrorMessage());
             System.exit(1);
         } catch (FileNotFoundException e) {
             System.err.println(e.getMessage());
+            System.out.printf("file not found");
             System.exit(1);
         } catch (IOException e) {
             System.err.println(e.getMessage());
             System.exit(1);
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
         }
     }
 
@@ -146,7 +168,7 @@ public class BlockServiceImpl implements BlockService {
         block.setText(audioRequestDto.getText());
         block.setAudioPath(createAudio(audioRequestDto, teamId));
         block.setUpdatedAt(LocalDateTime.now());
-        mergeBlocks(audioRequestDto.getProjectId());
+        mergeBlocks(teamId, audioRequestDto.getProjectId());
 
         blockRepository.save(block);
 
