@@ -5,6 +5,9 @@ import com.goggle.voco.dto.ProjectRequestDto;
 import com.goggle.voco.dto.ProjectResponseDto;
 import com.goggle.voco.dto.ProjectsResponseDto;
 import com.goggle.voco.service.ProjectService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpEntity;
@@ -22,11 +25,13 @@ import java.util.Map;
 @RequestMapping("/teams/{teamId}/projects")
 @Log4j2
 @RequiredArgsConstructor
+@Tag(name = "Project", description = "프로젝트 API")
 public class ProjectController {
 
     private final ProjectService projectService;
 
     @PostMapping("")
+    @Operation(summary = "프로젝트 생성", description = "프로젝트를 생성한다.")
     public ResponseEntity<ProjectResponseDto> createProject(
             @AuthenticationPrincipal User user,
             @RequestBody ProjectRequestDto projectRequestDto,
@@ -38,6 +43,7 @@ public class ProjectController {
     }
 
     @GetMapping("")
+    @Operation(summary = "프로젝트 목록 조회", description = "팀 프로젝트 목록을 조회한다.")
     public ResponseEntity<ProjectsResponseDto> findProjects(
             @AuthenticationPrincipal User user,
             @PathVariable("teamId") Long teamId) {
@@ -47,6 +53,7 @@ public class ProjectController {
     }
 
     @GetMapping("/{projectId}")
+    @Operation(summary = "프로젝트 상세 조회", description = "팀 프로젝트 상세 내용을 조회한다.")
     public ResponseEntity<ProjectResponseDto> findProjectById(@PathVariable("projectId") Long projectId) {
         ProjectResponseDto projectResponseDto = projectService.findProjectById(projectId);
 
@@ -54,6 +61,7 @@ public class ProjectController {
     }
 
     @DeleteMapping("/{projectId}")
+    @Operation(summary = "프로젝트 삭제", description = "특정 팀 프로젝트를 삭제한다.")
     public ResponseEntity<String> deleteProject(@PathVariable("projectId") Long projectId) throws Exception {
         projectService.deleteProject(projectId);
 
