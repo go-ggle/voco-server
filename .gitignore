@@ -1,4 +1,5 @@
 src/main/resources/
+*.wav
 HELP.md
 .gradle
 build/

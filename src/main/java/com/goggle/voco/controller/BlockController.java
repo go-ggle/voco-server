@@ -48,8 +48,10 @@ public class BlockController {
     @DeleteMapping("/{blockId}")
     @Operation(summary = "블럭 음성 삭제", description = "특정 블럭 음성을 삭제한다.")
     public ResponseEntity<String> deleteBlock(
+            @PathVariable("teamId") Long teamId,
+            @PathVariable("projectId") Long projectId,
             @PathVariable("blockId") Long blockId) throws Exception {
-        blockService.deleteBlock(blockId);
+        blockService.deleteBlock(teamId, projectId, blockId);
 
         return ResponseEntity.status(HttpStatus.OK).body("정상적으로 삭제되었습니다.");
     }

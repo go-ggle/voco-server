@@ -5,9 +5,10 @@ import com.goggle.voco.dto.BlockResponseDto;
 import com.goggle.voco.dto.BlocksResponseDto;
 
 public interface BlockService {
-    String createAudio(AudioRequestDto audioRequestDto);
-    BlockResponseDto createBlock(AudioRequestDto audioRequestDto, Long projectId, Long id);
-    BlocksResponseDto findBlocks(Long teamId);
-    void deleteBlock(Long blockId) throws Exception;
+    String createAudio(AudioRequestDto audioRequestDto, Long teamId);
+    void mergeBlocks(Long teamId, Long projectId);
+    BlockResponseDto createBlock(AudioRequestDto audioRequestDto, Long teamId, Long projectId);
+    BlocksResponseDto findBlocks(Long projectId);
+    void deleteBlock(Long projectId, Long teamId, Long blockId) throws Exception;
     BlockResponseDto updateBlock(AudioRequestDto audioRequestDto, Long teamId, Long blockId) throws Exception;
 }
