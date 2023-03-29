@@ -11,6 +11,7 @@ import com.goggle.voco.repository.BlockRepository;
 import com.goggle.voco.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -83,9 +84,9 @@ public class BlockServiceImpl implements BlockService {
             long length = 0;
             AudioInputStream clip = null;
             List<AudioInputStream> list = new ArrayList<AudioInputStream>();
-
+            new File(String.valueOf(projectId)).mkdirs();
             for (Block b: blocks) {
-                FileOutputStream fos = new FileOutputStream(new File("temp" + b.getId() + ".wav"));
+                FileOutputStream fos = new FileOutputStream(new File(projectId + "/temp" + b.getId() + ".wav"));
                 S3Object o = amazonS3Client.getObject(AUDIO_BUCKET_NAME, teamId + "/" + projectId + "/" + b.getId() + ".wav");
                 S3ObjectInputStream s3is = o.getObjectContent();
                 byte[] read_buf = new byte[1024];
@@ -95,11 +96,10 @@ public class BlockServiceImpl implements BlockService {
                 }
                 fos.close();
 
-                clip = AudioSystem.getAudioInputStream(new File("temp" + b.getId() + ".wav"));
+                clip = AudioSystem.getAudioInputStream(new File(projectId + "/temp" + b.getId() + ".wav"));
                 list.add(clip);
                 length += clip.getFrameLength();
             }
-
             if(length>0 && list.size()>0 && clip!=null) {
                 AudioInputStream appendedFiles =
                         new AudioInputStream(
@@ -111,7 +111,9 @@ public class BlockServiceImpl implements BlockService {
                         AudioFileFormat.Type.WAVE,
                         new File("appended.wav"));
             }
+            clip.close();
             amazonS3Client.putObject(AUDIO_BUCKET_NAME, teamId + "/" + projectId + "/0.wav", new File("appended.wav"));
+            FileUtils.deleteDirectory(new File(String.valueOf(projectId)));
         } catch (AmazonServiceException e) {
             System.err.println(e.getErrorMessage());
             System.exit(1);
