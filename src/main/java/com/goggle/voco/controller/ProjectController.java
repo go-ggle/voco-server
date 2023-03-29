@@ -69,6 +69,7 @@ public class ProjectController {
     }
 
     @PatchMapping("/{projectId}")
+    @Operation(summary = "프로젝트 제목 수정", description = "프로젝트 제목을 수정한다.")
     public ResponseEntity<ProjectResponseDto> updateProjectTitle(@PathVariable("projectId") Long projectId, @RequestBody Map<String, String> body) throws Exception {
         ProjectResponseDto projectResponseDto = projectService.updateProjectTitle(projectId, body.get("title"));
 
