@@ -1,5 +1,6 @@
 package com.goggle.voco.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.goggle.voco.domain.Project;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,19 +16,23 @@ import java.time.LocalDateTime;
 public class ProjectResponseDto {
 
     private Long id;
+    private Long team;
     private String title;
     private Long language;
-    private Long team;
 
-    private LocalDateTime createdAt, updatedAt;
+    @JsonFormat(pattern = "yyyy년 MM월 dd일 HH:mm")
+    private LocalDateTime updatedAt;
+
+    private boolean isBookmarked;
+
     public static ProjectResponseDto from(Project project) {
         return new ProjectResponseDto(
                 project.getId(),
+                project.getTeam().getId(),
                 project.getTitle(),
                 project.getLanguage(),
-                project.getTeam().getId(),
-                project.getCreatedAt(),
-                project.getUpdatedAt()
+                project.getUpdatedAt(),
+                false
         );
     }
 }
