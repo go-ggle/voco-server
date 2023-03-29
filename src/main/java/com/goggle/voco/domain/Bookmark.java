@@ -26,4 +26,8 @@ public class Bookmark extends BaseEntity {
         this.user = user;
         this.project = project;
     }
+
+    public Long getProjectId() {
+        return project.getId();
+    }
 }

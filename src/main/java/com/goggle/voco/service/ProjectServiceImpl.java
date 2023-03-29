@@ -1,12 +1,15 @@
 package com.goggle.voco.service;
 
+import com.goggle.voco.domain.Bookmark;
 import com.goggle.voco.domain.Project;
 import com.goggle.voco.domain.Team;
+import com.goggle.voco.domain.User;
 import com.goggle.voco.dto.ProjectRequestDto;
 import com.goggle.voco.dto.ProjectResponseDto;
 import com.goggle.voco.dto.ProjectsResponseDto;
 import com.goggle.voco.exception.ErrorCode;
 import com.goggle.voco.exception.NotFoundException;
+import com.goggle.voco.repository.BookmarkRepository;
 import com.goggle.voco.repository.ProjectRepository;
 import com.goggle.voco.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +28,7 @@ public class    ProjectServiceImpl implements ProjectService{
 
     private final ProjectRepository projectRepository;
     private final TeamRepository teamRepository;
+    private final BookmarkRepository bookmarkRepository;
 
     @Override
     public ProjectResponseDto createProject(ProjectRequestDto projectRequestDto, Long teamId) {
@@ -32,25 +36,30 @@ public class    ProjectServiceImpl implements ProjectService{
         Project project = new Project(projectRequestDto.getLanguage(), projectRequestDto.getTitle(), team);
         projectRepository.save(project);
 
-        return ProjectResponseDto.from(project);
+        return ProjectResponseDto.from(project, false);
     }
 
     @Override
-    public ProjectsResponseDto findProjects(Long teamId) {
+    public ProjectsResponseDto findProjects(User user, Long teamId) {
         Team team = teamRepository.findById(teamId).orElseThrow(()->new NotFoundException(ErrorCode.TEAM_NOT_FOUND));
-        List<Project> projects = projectRepository.findByTeamOrderByUpdatedAtDesc(team);
+        List<Project> projects = projectRepository.findByTeamIdOrderByUpdatedAtDesc(teamId);
+        List<Long> bookmarkedProjectIds = bookmarkRepository.findByUserIdAndTeamId(user.getId(), teamId)
+                .stream()
+                .map(Bookmark::getProjectId)
+                .collect(Collectors.toList());
         List<ProjectResponseDto> projectResponseDtos = projects.stream()
-                .map(project -> ProjectResponseDto.from(project))
+                .map(project -> ProjectResponseDto.from(project, bookmarkedProjectIds.contains(project.getId())))
                 .collect(Collectors.toList());
 
         return new ProjectsResponseDto(projectResponseDtos);
     }
 
     @Override
-    public ProjectResponseDto findProjectById(Long projectId) {
+    public ProjectResponseDto findProjectById(User user, Long projectId) {
         Project project = projectRepository.findById(projectId).orElseThrow(()->new NotFoundException(ErrorCode.PROJECT_NOT_FOUND));
+        boolean isBookmarked = bookmarkRepository.existsByUserAndProject(user, project);
 
-        return ProjectResponseDto.from(project);
+        return ProjectResponseDto.from(project, isBookmarked);
     }
 
     @Override
@@ -61,12 +70,14 @@ public class    ProjectServiceImpl implements ProjectService{
     }
 
     @Override
-    public ProjectResponseDto updateProjectTitle(Long projectId, String title) throws Exception {
+    public ProjectResponseDto updateProjectTitle(User user, Long projectId, String title) throws Exception {
         Project project = projectRepository.findById(projectId).orElseThrow(()->new Exception("존재하지 않는 프로젝트입니다."));
         project.setTitle(title);
         project.setUpdatedAt(LocalDateTime.now());
         projectRepository.save(project);
 
-        return ProjectResponseDto.from(project);
+        boolean isBookmarked = bookmarkRepository.existsByUserAndProject(user, project);
+
+        return ProjectResponseDto.from(project, isBookmarked);
     }
 }

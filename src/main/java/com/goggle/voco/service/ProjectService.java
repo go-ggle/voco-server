@@ -7,8 +7,8 @@ import com.goggle.voco.dto.ProjectsResponseDto;
 
 public interface ProjectService {
     ProjectResponseDto createProject(ProjectRequestDto projectRequestDTO, Long teamId);
-    ProjectsResponseDto findProjects(Long teamId);
-    ProjectResponseDto findProjectById(Long projectId);
+    ProjectsResponseDto findProjects(User user, Long teamId);
+    ProjectResponseDto findProjectById(User user, Long projectId);
     void deleteProject(Long projectId) throws Exception;
-    ProjectResponseDto updateProjectTitle(Long projectId, String title) throws Exception;
+    ProjectResponseDto updateProjectTitle(User user, Long projectId, String title) throws Exception;
 }

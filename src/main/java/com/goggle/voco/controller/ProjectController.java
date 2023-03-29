@@ -47,15 +47,17 @@ public class ProjectController {
     public ResponseEntity<ProjectsResponseDto> findProjects(
             @AuthenticationPrincipal User user,
             @PathVariable("teamId") Long teamId) {
-        ProjectsResponseDto projectsResponseDto = projectService.findProjects(teamId);
+        ProjectsResponseDto projectsResponseDto = projectService.findProjects(user, teamId);
 
         return new ResponseEntity<>(projectsResponseDto, HttpStatus.OK);
     }
 
     @GetMapping("/{projectId}")
     @Operation(summary = "프로젝트 상세 조회", description = "팀 프로젝트 상세 내용을 조회한다.")
-    public ResponseEntity<ProjectResponseDto> findProjectById(@PathVariable("projectId") Long projectId) {
-        ProjectResponseDto projectResponseDto = projectService.findProjectById(projectId);
+    public ResponseEntity<ProjectResponseDto> findProjectById(
+            @AuthenticationPrincipal User user,
+            @PathVariable("projectId") Long projectId) {
+        ProjectResponseDto projectResponseDto = projectService.findProjectById(user, projectId);
 
         return new ResponseEntity<>(projectResponseDto, HttpStatus.OK);
     }
@@ -70,8 +72,10 @@ public class ProjectController {
 
     @PatchMapping("/{projectId}")
     @Operation(summary = "프로젝트 제목 수정", description = "프로젝트 제목을 수정한다.")
-    public ResponseEntity<ProjectResponseDto> updateProjectTitle(@PathVariable("projectId") Long projectId, @RequestBody Map<String, String> body) throws Exception {
-        ProjectResponseDto projectResponseDto = projectService.updateProjectTitle(projectId, body.get("title"));
+    public ResponseEntity<ProjectResponseDto> updateProjectTitle(
+            @AuthenticationPrincipal User user,
+            @PathVariable("projectId") Long projectId, @RequestBody Map<String, String> body) throws Exception {
+        ProjectResponseDto projectResponseDto = projectService.updateProjectTitle(user, projectId, body.get("title"));
 
         return new ResponseEntity<>(projectResponseDto, HttpStatus.OK);
     }
