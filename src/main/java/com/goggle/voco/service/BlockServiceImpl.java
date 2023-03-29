@@ -143,6 +143,7 @@ public class BlockServiceImpl implements BlockService {
         audioRequestDto.setBlockId(block.getId());
         String audioPath = createAudio(audioRequestDto, teamId);
         block.setAudioPath(audioPath);
+        mergeBlocks(teamId, projectId);
 
         return BlockResponseDto.from(block);
     }
@@ -159,10 +160,10 @@ public class BlockServiceImpl implements BlockService {
 
     //TODO: 버켓에서 음성 삭제
     @Override
-    public void deleteBlock(Long blockId) {
+    public void deleteBlock(Long teamId, Long projectId, Long blockId) {
         Block block = blockRepository.findById(blockId).orElseThrow(()->new NotFoundException(ErrorCode.BLOCK_NOT_FOUND));
-
         blockRepository.delete(block);
+        mergeBlocks(teamId, projectId);
     }
 
     @Override

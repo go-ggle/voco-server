@@ -9,6 +9,6 @@ public interface BlockService {
     void mergeBlocks(Long teamId, Long projectId);
     BlockResponseDto createBlock(AudioRequestDto audioRequestDto, Long teamId, Long projectId);
     BlocksResponseDto findBlocks(Long projectId);
-    void deleteBlock(Long blockId) throws Exception;
+    void deleteBlock(Long projectId, Long teamId, Long blockId) throws Exception;
     BlockResponseDto updateBlock(AudioRequestDto audioRequestDto, Long teamId, Long blockId) throws Exception;
 }
