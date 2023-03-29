@@ -14,8 +14,10 @@ import com.goggle.voco.repository.UserRepository;
 import com.goggle.voco.repository.ParticipationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springdoc.core.ParameterId;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -78,10 +80,14 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public TeamResponseDto joinTeam(User user, String teamCode) {
         Team team = teamRepository.findByTeamCode(teamCode).orElseThrow(()-> new NotFoundException(ErrorCode.TEAM_NOT_FOUND));
-
-        Participation participation = new Participation(user, team);
-        participationRepository.save(participation);
-
+        Participation participation = participationRepository.findByUserAndTeamId(user, team.getId());
+        if(participation != null){
+            throw new BadRequestException(ErrorCode.ALREADY_JOINED);
+        }
+        else {
+            Participation newParticipation = new Participation(user, team);
+            participationRepository.save(newParticipation);
+        }
         return TeamResponseDto.from(team);
     }
 
