@@ -4,6 +4,8 @@ import com.goggle.voco.domain.User;
 import com.goggle.voco.dto.BookmarkRequestDto;
 import com.goggle.voco.dto.BookmarkResponseDto;
 import com.goggle.voco.service.BookmarkService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -17,10 +19,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/bookmarks")
 @Log4j2
 @RequiredArgsConstructor
+@Tag(name = "Bookmark", description = "북마크 API")
 public class BookmarkController {
     private final BookmarkService bookmarkService;
 
     @PostMapping("/{projectId}")
+    @Operation(summary = "북마크 생성", description = "특정 프로젝트를 북마크한다.")
     public ResponseEntity<BookmarkResponseDto> bookmarkProject(
             @AuthenticationPrincipal User user,
             @PathVariable("projectId") Long projectId) throws Exception {
@@ -30,6 +34,7 @@ public class BookmarkController {
     }
 
     @DeleteMapping("/{projectId}")
+    @Operation(summary = "북마크 해제", description = "특정 프로젝트를 북마크 해제한다.")
     public ResponseEntity<String> deleteProject(
             @AuthenticationPrincipal User user,
             @PathVariable("projectId") Long projectId) throws Exception {
@@ -37,5 +42,4 @@ public class BookmarkController {
 
         return ResponseEntity.status(HttpStatus.OK).body("정상적으로 북마크가 해제되었습니다.");
     }
-
 }
