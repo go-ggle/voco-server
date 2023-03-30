@@ -61,8 +61,9 @@ public class BlockController {
     public ResponseEntity<BlockResponseDto> updateBlock(
             @RequestBody AudioRequestDto audioRequestDto,
             @PathVariable("teamId") Long teamId,
+            @PathVariable("projectId") Long projectId,
             @PathVariable("blockId") Long blockId) throws Exception{
-        BlockResponseDto blockResponseDto = blockService.updateBlock(audioRequestDto, teamId, blockId);
+        BlockResponseDto blockResponseDto = blockService.updateBlock(audioRequestDto, teamId, projectId, blockId);
         return new ResponseEntity<>(blockResponseDto, HttpStatus.OK);
     }
 }
