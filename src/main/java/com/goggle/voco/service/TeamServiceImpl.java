@@ -38,6 +38,7 @@ public class TeamServiceImpl implements TeamService {
         for (int i = 0; i < 7; i++) {
             code.append(alphaNum.charAt(random.nextInt(alphaNumLength)));
         }
+
         return code.toString();
     }
 

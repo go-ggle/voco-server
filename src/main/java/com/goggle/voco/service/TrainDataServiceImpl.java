@@ -17,13 +17,7 @@ public class TrainDataServiceImpl implements TrainDataService {
     @Override
     public TrainDataResponseDto findTrainById(Long id) {
         Train train = trainRepository.getReferenceById(id);
-
-        TrainDataResponseDto trainDataResponseDto = new TrainDataResponseDto();
-        trainDataResponseDto.setId(train.getId());
-        trainDataResponseDto.setText_id(train.getTextId());
-        trainDataResponseDto.setText(train.getText());
-
-        return trainDataResponseDto;
+        return TrainDataResponseDto.from(train);
     }
 
     @Override
@@ -33,12 +27,6 @@ public class TrainDataServiceImpl implements TrainDataService {
         train.setText(trainDataRequestDto.getText());
 
         trainRepository.save(train);
-
-        TrainDataResponseDto trainDataResponseDto = new TrainDataResponseDto();
-        trainDataResponseDto.setId(train.getId());
-        trainDataResponseDto.setText_id(train.getTextId());
-        trainDataResponseDto.setText(train.getText());
-
-        return trainDataResponseDto;
+        return TrainDataResponseDto.from(train);
     }
 }

@@ -53,9 +53,7 @@ public class BlockServiceImpl implements BlockService {
     private String FLASK_PORT;
 
     @Override
-    public String createAudio(AudioRequestDto audioRequestDto, Long teamId) {
-        Long projectId = audioRequestDto.getProjectId();
-        Long blockId = audioRequestDto.getBlockId();
+    public String createAudio(AudioRequestDto audioRequestDto, Long teamId, Long projectId, Long blockId) {
 
         URI uri = UriComponentsBuilder
                 .fromUriString("http://" + AI_ADDRESS + ":" + FLASK_PORT)
@@ -94,6 +92,8 @@ public class BlockServiceImpl implements BlockService {
                 while ((read_len = s3is.read(read_buf)) > 0) {
                     fos.write(read_buf, 0, read_len);
                 }
+                String[] cmd = {"ffmpeg -filter_complex aevalsrc=0 -t 5 " + projectId + "/temp" + b.getId() + ".wav"};
+                Runtime.getRuntime().exec(cmd);
                 fos.close();
 
                 clip = AudioSystem.getAudioInputStream(new File(projectId + "/temp" + b.getId() + ".wav"));
@@ -109,17 +109,16 @@ public class BlockServiceImpl implements BlockService {
 
                 AudioSystem.write(appendedFiles,
                         AudioFileFormat.Type.WAVE,
-                        new File("appended.wav"));
+                        new File(projectId + "/appended.wav"));
             }
             clip.close();
-            amazonS3Client.putObject(AUDIO_BUCKET_NAME, teamId + "/" + projectId + "/0.wav", new File("appended.wav"));
+            amazonS3Client.putObject(AUDIO_BUCKET_NAME, teamId + "/" + projectId + "/0.wav", new File(projectId + "/appended.wav"));
             FileUtils.deleteDirectory(new File(String.valueOf(projectId)));
         } catch (AmazonServiceException e) {
             System.err.println(e.getErrorMessage());
             System.exit(1);
         } catch (FileNotFoundException e) {
             System.err.println(e.getMessage());
-            System.out.printf("file not found");
             System.exit(1);
         } catch (IOException e) {
             System.err.println(e.getMessage());
@@ -133,15 +132,13 @@ public class BlockServiceImpl implements BlockService {
     public BlockResponseDto createBlock(AudioRequestDto audioRequestDto, Long teamId, Long projectId) {
         String text = audioRequestDto.getText();
         Long voiceId = audioRequestDto.getVoiceId();
-        audioRequestDto.setProjectId(projectId);
-        audioRequestDto.setTeamId(teamId);
+        Long interval = audioRequestDto.getInterval();
 
         Project project = projectRepository.findById(projectId).orElseThrow(()-> new NotFoundException(ErrorCode.PROJECT_NOT_FOUND));
-        Block block = new Block(project, text, "", voiceId);
+        Block block = new Block(project, text, "", voiceId, interval);
         blockRepository.save(block);
 
-        audioRequestDto.setBlockId(block.getId());
-        String audioPath = createAudio(audioRequestDto, teamId);
+        String audioPath = createAudio(audioRequestDto, teamId, projectId, block.getId());
         block.setAudioPath(audioPath);
         mergeBlocks(teamId, projectId);
 
@@ -167,16 +164,13 @@ public class BlockServiceImpl implements BlockService {
     }
 
     @Override
-    public BlockResponseDto updateBlock(AudioRequestDto audioRequestDto, Long teamId, Long blockId) {
+    public BlockResponseDto updateBlock(AudioRequestDto audioRequestDto, Long teamId, Long projectId, Long blockId) {
         Block block = blockRepository.findById(blockId).orElseThrow(()->new NotFoundException(ErrorCode.BLOCK_NOT_FOUND));
 
-        audioRequestDto.setProjectId(block.getProject().getId());
-        audioRequestDto.setBlockId(block.getId());
-
         block.setText(audioRequestDto.getText());
-        block.setAudioPath(createAudio(audioRequestDto, teamId));
+        block.setAudioPath(createAudio(audioRequestDto, teamId, projectId, blockId));
         block.setUpdatedAt(LocalDateTime.now());
-        mergeBlocks(teamId, audioRequestDto.getProjectId());
+        mergeBlocks(teamId, projectId);
 
         blockRepository.save(block);
 

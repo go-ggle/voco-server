@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ParticipationRepository extends JpaRepository<Participation, Long> {
     @Query("select t "
@@ -20,4 +21,5 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
             + "join p.user u "
             + "where p.user.isRegistered = true")
     List<User> findRegisteredUsersByTeamId(Long teamId);
+    Participation findByUserAndTeamId(User user, Long teamId);
 }

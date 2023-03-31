@@ -12,6 +12,7 @@ public enum ErrorCode {
 
     //400 BAD REQUEST
     INVALID_USER(HttpStatus.BAD_REQUEST, "유효하지 않은 유저입니다."),
+    ALREADY_JOINED(HttpStatus.BAD_REQUEST, "이미 속해있는 팀입니다."),
 
     //404 NOT_FOUND
     TEAM_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 팀이 존재하지 않습니다."),
