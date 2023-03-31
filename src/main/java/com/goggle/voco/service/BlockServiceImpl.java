@@ -92,6 +92,8 @@ public class BlockServiceImpl implements BlockService {
                 while ((read_len = s3is.read(read_buf)) > 0) {
                     fos.write(read_buf, 0, read_len);
                 }
+                String[] cmd = {"ffmpeg -filter_complex aevalsrc=0 -t 5 " + projectId + "/temp" + b.getId() + ".wav"};
+                Runtime.getRuntime().exec(cmd);
                 fos.close();
 
                 clip = AudioSystem.getAudioInputStream(new File(projectId + "/temp" + b.getId() + ".wav"));
@@ -130,9 +132,10 @@ public class BlockServiceImpl implements BlockService {
     public BlockResponseDto createBlock(AudioRequestDto audioRequestDto, Long teamId, Long projectId) {
         String text = audioRequestDto.getText();
         Long voiceId = audioRequestDto.getVoiceId();
+        Long interval = audioRequestDto.getInterval();
 
         Project project = projectRepository.findById(projectId).orElseThrow(()-> new NotFoundException(ErrorCode.PROJECT_NOT_FOUND));
-        Block block = new Block(project, text, "", voiceId);
+        Block block = new Block(project, text, "", voiceId, interval);
         blockRepository.save(block);
 
         String audioPath = createAudio(audioRequestDto, teamId, projectId, block.getId());
