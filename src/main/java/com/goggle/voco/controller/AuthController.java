@@ -4,6 +4,7 @@ import com.goggle.voco.domain.User;
 import com.goggle.voco.dto.TokenRequestDto;
 import com.goggle.voco.dto.TokenResponseDto;
 import com.goggle.voco.dto.UserRequestDto;
+import com.goggle.voco.dto.UserResponseDto;
 import com.goggle.voco.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,10 +28,10 @@ public class AuthController {
 
     @PostMapping("signup")
     @Operation(summary = "회원가입", description = "이메일과 비밀번호로 회원가입을 진행한다.")
-    public ResponseEntity<User> createUser(@RequestBody UserRequestDto userRequestDto) {
-        User user = authService.createUser(userRequestDto);
+    public ResponseEntity<UserResponseDto> createUser(@RequestBody UserRequestDto userRequestDto) {
+        UserResponseDto userResponseDto = authService.createUser(userRequestDto);
 
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+        return new ResponseEntity<>(userResponseDto, HttpStatus.CREATED);
     }
 
     @PostMapping("login")

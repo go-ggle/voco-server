@@ -7,6 +7,7 @@ import com.goggle.voco.domain.User;
 import com.goggle.voco.dto.TokenRequestDto;
 import com.goggle.voco.dto.TokenResponseDto;
 import com.goggle.voco.dto.UserRequestDto;
+import com.goggle.voco.dto.UserResponseDto;
 import com.goggle.voco.exception.BadRequestException;
 import com.goggle.voco.exception.ErrorCode;
 import com.goggle.voco.exception.NotFoundException;
@@ -30,7 +31,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public User createUser(UserRequestDto userRequestDto) {
+    public UserResponseDto createUser(UserRequestDto userRequestDto) {
         String password = passwordEncoder.encode(userRequestDto.getPassword());
 
         User user = new User(userRequestDto.getEmail(), userRequestDto.getNickname(), password);
@@ -45,7 +46,7 @@ public class AuthServiceImpl implements AuthService {
         user.setPrivateTeamId(team.getId());
         userRepository.save(user);
 
-        return user;
+        return UserResponseDto.from(user);
     }
 
     @Override
