@@ -93,7 +93,7 @@ public class BlockServiceImpl implements BlockService {
                     fos.write(read_buf, 0, read_len);
                 }
                 fos.close();
-                String[] cmd ={"sox", projectId + "\\temp" + b.getId() + ".wav", projectId + "\\interval" + b.getId() + ".wav", "pad", "0", "5"};
+                String[] cmd = {"sox", projectId + "\\temp" + b.getId() + ".wav", projectId + "\\interval" + b.getId() + ".wav", "pad", "0", String.valueOf(b.getInterval())};
 
                 try {
                     Runtime rt = Runtime.getRuntime();
@@ -130,7 +130,7 @@ public class BlockServiceImpl implements BlockService {
             }
             clip.close();
             amazonS3Client.putObject(AUDIO_BUCKET_NAME, teamId + "/" + projectId + "/0.wav", new File(projectId + "/appended.wav"));
-            //FileUtils.deleteDirectory(new File(String.valueOf(projectId)));
+            FileUtils.deleteDirectory(new File(String.valueOf(projectId)));
         } catch (AmazonServiceException e) {
             System.err.println(e.getErrorMessage());
             System.exit(1);
