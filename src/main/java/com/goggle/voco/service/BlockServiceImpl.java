@@ -92,9 +92,11 @@ public class BlockServiceImpl implements BlockService {
                 while ((read_len = s3is.read(read_buf)) > 0) {
                     fos.write(read_buf, 0, read_len);
                 }
-                String[] cmd = {"ffmpeg -filter_complex aevalsrc=0 -t 5 " + projectId + "/temp" + b.getId() + ".wav"};
-                Runtime.getRuntime().exec(cmd);
                 fos.close();
+                String[] cmd = {"C:\\devtool\\ffmpeg\\bin\\ffmpeg", "-filter_complex", "aevalsrc=0", "-t", "5", projectId + "\\s5.wav"};
+                Runtime.getRuntime().exec(cmd);
+                String[] cmd2 ={"C:\\devtool\\ffmpeg\\bin\\ffmpeg","-i", "concat:C:\\Desktop\\졸프\\voco-server\\" + projectId + "\\temp"+ b.getId() + ".wav|C:\\Desktop\\졸프\\voco-server\\" + projectId + "\\s5.wav", "-c", "copy", "C:\\Desktop\\졸프\\voco-server\\" + projectId + "\\temp" + b.getId() + ".wav"};
+                Runtime.getRuntime().exec(cmd2);
 
                 clip = AudioSystem.getAudioInputStream(new File(projectId + "/temp" + b.getId() + ".wav"));
                 list.add(clip);
@@ -113,7 +115,7 @@ public class BlockServiceImpl implements BlockService {
             }
             clip.close();
             amazonS3Client.putObject(AUDIO_BUCKET_NAME, teamId + "/" + projectId + "/0.wav", new File(projectId + "/appended.wav"));
-            FileUtils.deleteDirectory(new File(String.valueOf(projectId)));
+            //FileUtils.deleteDirectory(new File(String.valueOf(projectId)));
         } catch (AmazonServiceException e) {
             System.err.println(e.getErrorMessage());
             System.exit(1);
