@@ -93,12 +93,27 @@ public class BlockServiceImpl implements BlockService {
                     fos.write(read_buf, 0, read_len);
                 }
                 fos.close();
-                String[] cmd = {"C:\\devtool\\ffmpeg\\bin\\ffmpeg", "-filter_complex", "aevalsrc=0", "-t", "5", projectId + "\\s5.wav"};
-                Runtime.getRuntime().exec(cmd);
-                String[] cmd2 ={"C:\\devtool\\ffmpeg\\bin\\ffmpeg","-i", "concat:C:\\Desktop\\졸프\\voco-server\\" + projectId + "\\temp"+ b.getId() + ".wav|C:\\Desktop\\졸프\\voco-server\\" + projectId + "\\s5.wav", "-c", "copy", "C:\\Desktop\\졸프\\voco-server\\" + projectId + "\\temp" + b.getId() + ".wav"};
-                Runtime.getRuntime().exec(cmd2);
+                String[] cmd ={"sox", projectId + "\\temp" + b.getId() + ".wav", projectId + "\\interval" + b.getId() + ".wav", "pad", "0", "5"};
 
-                clip = AudioSystem.getAudioInputStream(new File(projectId + "/temp" + b.getId() + ".wav"));
+                try {
+                    Runtime rt = Runtime.getRuntime();
+                    Process pr = rt.exec(cmd);
+                    BufferedReader input = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+
+                    String line = null;
+
+                    while ((line = input.readLine()) != null) {
+                        System.out.println(line);
+                    }
+
+                    int exitVal = pr.waitFor();
+                    System.out.println("Exited with error code " + exitVal);
+                } catch(Exception e) {
+                    System.out.println(e.toString());
+                    e.printStackTrace();
+                }
+
+                clip = AudioSystem.getAudioInputStream(new File(projectId + "/interval" + b.getId() + ".wav"));
                 list.add(clip);
                 length += clip.getFrameLength();
             }
