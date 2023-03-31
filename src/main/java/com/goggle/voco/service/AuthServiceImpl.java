@@ -9,6 +9,7 @@ import com.goggle.voco.dto.TokenResponseDto;
 import com.goggle.voco.dto.UserRequestDto;
 import com.goggle.voco.exception.BadRequestException;
 import com.goggle.voco.exception.ErrorCode;
+import com.goggle.voco.exception.NotFoundException;
 import com.goggle.voco.repository.ParticipationRepository;
 import com.goggle.voco.repository.TeamRepository;
 import com.goggle.voco.repository.UserRepository;
@@ -46,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public TokenResponseDto createToken(TokenRequestDto tokenRequestDto) {
-        User user = userRepository.findByEmail(tokenRequestDto.getEmail()).orElseThrow(() -> new BadRequestException(ErrorCode.INVALID_USER));
+        User user = userRepository.findByEmail(tokenRequestDto.getEmail()).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
         if (!passwordEncoder.matches(tokenRequestDto.getPassword(), user.getPassword())) {
             throw new BadRequestException(ErrorCode.INVALID_USER);

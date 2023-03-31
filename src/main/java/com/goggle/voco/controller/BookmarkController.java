@@ -1,7 +1,5 @@
 package com.goggle.voco.controller;
 
-import com.goggle.voco.domain.User;
-import com.goggle.voco.dto.BookmarkRequestDto;
 import com.goggle.voco.dto.BookmarkResponseDto;
 import com.goggle.voco.service.BookmarkService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,9 +24,9 @@ public class BookmarkController {
     @PostMapping("/{projectId}")
     @Operation(summary = "북마크 생성", description = "특정 프로젝트를 북마크한다.")
     public ResponseEntity<BookmarkResponseDto> bookmarkProject(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal Long userId,
             @PathVariable("projectId") Long projectId) throws Exception {
-        BookmarkResponseDto bookmarkResponseDto = bookmarkService.createBookmark(user, projectId);
+        BookmarkResponseDto bookmarkResponseDto = bookmarkService.createBookmark(userId, projectId);
 
         return ResponseEntity.status(HttpStatus.OK).body(bookmarkResponseDto);
     }
@@ -36,9 +34,9 @@ public class BookmarkController {
     @DeleteMapping("/{projectId}")
     @Operation(summary = "북마크 해제", description = "특정 프로젝트를 북마크 해제한다.")
     public ResponseEntity<String> deleteProject(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal Long userId,
             @PathVariable("projectId") Long projectId) throws Exception {
-        bookmarkService.deleteBookmark(user, projectId);
+        bookmarkService.deleteBookmark(userId, projectId);
 
         return ResponseEntity.status(HttpStatus.OK).body("정상적으로 북마크가 해제되었습니다.");
     }

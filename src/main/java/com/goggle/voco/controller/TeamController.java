@@ -1,6 +1,5 @@
 package com.goggle.voco.controller;
 
-import com.goggle.voco.domain.User;
 import com.goggle.voco.dto.TeamRequestDto;
 import com.goggle.voco.dto.TeamResponseDto;
 import com.goggle.voco.dto.VoiceResponseDto;
@@ -29,18 +28,17 @@ public class TeamController {
     @PostMapping("")
     @Operation(summary = "팀 생성", description = "팀을 생성한다.")
     public ResponseEntity<TeamResponseDto> createTeam(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal Long userId,
             @RequestBody TeamRequestDto teamRequestDto) throws Exception {
-        TeamResponseDto teamResponseDto = teamService.createTeam(user, teamRequestDto);
+        TeamResponseDto teamResponseDto = teamService.createTeam(userId, teamRequestDto);
 
         return new ResponseEntity<>(teamResponseDto, HttpStatus.CREATED);
     }
 
     @GetMapping("")
     @Operation(summary = "팀 목록 조회", description = "로그인한 유저가 속한 팀 목록을 조회한다.")
-    public ResponseEntity<List> findTeams(
-            @AuthenticationPrincipal User user) throws Exception {
-        List<TeamResponseDto> teamResponseDtos = teamService.findTeams(user);
+    public ResponseEntity<List> findTeams(@AuthenticationPrincipal Long userId) throws Exception {
+        List<TeamResponseDto> teamResponseDtos = teamService.findTeams(userId);
 
         return new ResponseEntity<>(teamResponseDtos, HttpStatus.OK);
     }
@@ -48,9 +46,9 @@ public class TeamController {
     @PostMapping("/{teamCode}")
     @Operation(summary = "팀 참여", description = "팀 초대코드를 입력해 팀에 참여한다.")
     public ResponseEntity<TeamResponseDto> joinTeam(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal Long userId,
             @PathVariable("teamCode") String teamCode) throws Exception {
-        TeamResponseDto teamResponseDto = teamService.joinTeam(user, teamCode);
+        TeamResponseDto teamResponseDto = teamService.joinTeam(userId, teamCode);
 
         return new ResponseEntity<>(teamResponseDto, HttpStatus.CREATED);
     }
@@ -58,6 +56,7 @@ public class TeamController {
     @GetMapping("/{teamId}/voices")
     @Operation(summary = "목소리 등록 완료한 팀원 목록 조회", description = "특정 팀에 속한 팀원 중 목소리 등록을 완료한 팀원 목록을 조회한다.")
     public ResponseEntity<List> findRegisteredMembers(
+            @AuthenticationPrincipal Long userId,
             @PathVariable("teamId") Long teamId) throws Exception {
         List<VoiceResponseDto> voiceResponseDtos = teamService.findRegisteredTeamMembers(teamId);
 

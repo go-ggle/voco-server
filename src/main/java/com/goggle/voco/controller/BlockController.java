@@ -38,7 +38,7 @@ public class BlockController {
     @GetMapping("")
     @Operation(summary = "블럭 음성 목록 조회", description = "특정 프로젝트에 속한 블럭 음성 목록을 조회한다.")
     public ResponseEntity<BlocksResponseDto> findBlocks(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal Long userId,
             @PathVariable("projectId") Long projectId) {
         BlocksResponseDto blocksResponseDto = blockService.findBlocks(projectId);
 

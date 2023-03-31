@@ -3,7 +3,6 @@ package com.goggle.voco.service;
 import com.goggle.voco.domain.Bookmark;
 import com.goggle.voco.domain.Project;
 import com.goggle.voco.domain.User;
-import com.goggle.voco.dto.BookmarkRequestDto;
 import com.goggle.voco.dto.BookmarkResponseDto;
 import com.goggle.voco.exception.ErrorCode;
 import com.goggle.voco.exception.NotFoundException;
@@ -13,8 +12,6 @@ import com.goggle.voco.repository.UserRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @Log4j2
@@ -31,7 +28,8 @@ public class BookmarkServiceImpl implements BookmarkService{
     }
 
     @Override
-    public BookmarkResponseDto createBookmark(User user, Long projectId) {
+    public BookmarkResponseDto createBookmark(Long userId, Long projectId) {
+        User user = userRepository.findById(userId).orElseThrow(()-> new NotFoundException(ErrorCode.USER_NOT_FOUND));
         Project project = projectRepository.findById(projectId).orElseThrow(()-> new NotFoundException(ErrorCode.PROJECT_NOT_FOUND));
 
         Bookmark bookmark = new Bookmark(user, project);
@@ -41,9 +39,9 @@ public class BookmarkServiceImpl implements BookmarkService{
     }
 
     @Override
-    public void deleteBookmark(User user, Long projectId) {
+    public void deleteBookmark(Long userId, Long projectId) {
         Project project = projectRepository.findById(projectId).orElseThrow(()-> new NotFoundException(ErrorCode.PROJECT_NOT_FOUND));
-        Bookmark bookmark = bookmarkRepository.findByUserAndProject(user, project).orElseThrow();
+        Bookmark bookmark = bookmarkRepository.findByUser_IdAndProject_Id(userId, projectId).orElseThrow();
 
         bookmarkRepository.delete(bookmark);
     }

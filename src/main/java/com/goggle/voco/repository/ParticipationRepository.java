@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ParticipationRepository extends JpaRepository<Participation, Long> {
-
     @Query("select t "
             + "from Participation p "
             + "join p.team t "
@@ -21,6 +20,6 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
             + "from Participation p "
             + "join p.user u "
             + "where p.user.isRegistered = true")
-    List<User> findRegisteredUsersByTeam(Team team);
+    List<User> findRegisteredUsersByTeamId(Long teamId);
     Participation findByUserAndTeamId(User user, Long teamId);
 }

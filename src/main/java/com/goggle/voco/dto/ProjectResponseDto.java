@@ -25,14 +25,14 @@ public class ProjectResponseDto {
 
     private boolean isBookmarked;
 
-    public static ProjectResponseDto from(Project project) {
+    public static ProjectResponseDto from(Project project, boolean isBookmarked) {
         return new ProjectResponseDto(
                 project.getId(),
                 project.getTeam().getId(),
                 project.getTitle(),
                 project.getLanguage(),
                 project.getUpdatedAt(),
-                false
+                isBookmarked
         );
     }
 }
