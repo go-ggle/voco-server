@@ -1,11 +1,14 @@
 package com.goggle.voco.config.security;
 
+import com.goggle.voco.exception.ErrorCode;
+import com.goggle.voco.exception.UnauthorizedException;
 import com.goggle.voco.service.UserDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Date;
 
+@Log4j2
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
@@ -50,6 +54,7 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = userDetailsService.loadUserByUserId(this.getUserId(token));
+
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 

@@ -1,8 +1,10 @@
 package com.goggle.voco.service;
 
+import com.goggle.voco.domain.User;
 import com.goggle.voco.exception.BadRequestException;
 import com.goggle.voco.exception.ErrorCode;
 import com.goggle.voco.exception.NotFoundException;
+import com.goggle.voco.exception.UnauthorizedException;
 import com.goggle.voco.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -19,6 +21,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUserId(Long userId) throws UsernameNotFoundException {
-        return userRepository.findById(userId).orElseThrow();
+        UserDetails userDetails = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        return userDetails;
     }
 }
