@@ -38,6 +38,6 @@ public class AuthController {
     public ResponseEntity<TokenResponseDto> login(@RequestBody TokenRequestDto tokenRequestDto) {
         TokenResponseDto tokenResponseDto = authService.createToken(tokenRequestDto);
 
-        return new ResponseEntity<>(tokenResponseDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(tokenResponseDto, HttpStatus.OK);
     }
 }

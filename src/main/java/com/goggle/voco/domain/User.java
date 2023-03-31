@@ -29,6 +29,7 @@ public class User extends BaseEntity implements UserDetails {
     private String email;
     private String nickname;
     private Boolean isRegistered;
+    private Long privateTeamId;
 
     public User(String email, String nickname, String password) {
         this.email=email;

@@ -42,6 +42,9 @@ public class AuthServiceImpl implements AuthService {
         Participation participation = new Participation(user, team);
         participationRepository.save(participation);
 
+        user.setPrivateTeamId(team.getId());
+        userRepository.save(user);
+
         return user;
     }
 
@@ -50,11 +53,11 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByEmail(tokenRequestDto.getEmail()).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
         if (!passwordEncoder.matches(tokenRequestDto.getPassword(), user.getPassword())) {
-            throw new BadRequestException(ErrorCode.INVALID_USER);
+            throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
         }
 
         String accessToken = jwtTokenProvider.createToken(String.valueOf(user.getId()));
 
-        return new TokenResponseDto(accessToken);
+        return new TokenResponseDto(accessToken, user.getPrivateTeamId());
     }
 }
