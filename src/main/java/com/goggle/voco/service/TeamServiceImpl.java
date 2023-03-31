@@ -6,7 +6,6 @@ import com.goggle.voco.domain.Participation;
 import com.goggle.voco.dto.TeamRequestDto;
 import com.goggle.voco.dto.TeamResponseDto;
 import com.goggle.voco.dto.VoiceResponseDto;
-import com.goggle.voco.exception.BadRequestException;
 import com.goggle.voco.exception.ErrorCode;
 import com.goggle.voco.exception.NotFoundException;
 import com.goggle.voco.repository.TeamRepository;
@@ -17,7 +16,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -44,30 +42,22 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public TeamResponseDto createTeam(User user, TeamRequestDto teamRequestDto) throws Exception {
+    public TeamResponseDto createTeam(Long userId, TeamRequestDto teamRequestDto) {
         String teamCode = createCode();
         Team team = new Team(teamRequestDto.getName(), teamCode);
         teamRepository.save(team);
 
-        Optional<Team> selectedTeam = teamRepository.findByTeamCode(teamCode);
-        Optional<User> selectedUser = userRepository.findById(user.getId());
+        User user = userRepository.findById(userId).orElseThrow(()->new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
-        Participation participation = new Participation();
-        if(selectedTeam.isPresent() && selectedUser.isPresent()){
-            participation.setTeam(selectedTeam.get());
-            participation.setUser(selectedUser.get());
+        Participation participation = new Participation(user, team);
+        participationRepository.save(participation);
 
-            participationRepository.save(participation);
-        }
-        else{
-            throw new Exception();
-        }
         return TeamResponseDto.from(team);
     }
 
     @Override
-    public List<TeamResponseDto> findTeams(User user) {
-        List<Team> teams = participationRepository.findTeamsByUserId(user.getId());
+    public List<TeamResponseDto> findTeams(Long userId) {
+        List<Team> teams = participationRepository.findTeamsByUserId(userId);
         List<TeamResponseDto> teamResponseDtos = teams.stream()
                 .map(team -> TeamResponseDto.from(team))
                 .collect(Collectors.toList());
@@ -76,8 +66,9 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public TeamResponseDto joinTeam(User user, String teamCode) {
-        Team team = teamRepository.findByTeamCode(teamCode).orElseThrow(()-> new NotFoundException(ErrorCode.TEAM_NOT_FOUND));
+    public TeamResponseDto joinTeam(Long userId, String teamCode) {
+        User user = userRepository.findById(userId).orElseThrow(()->new NotFoundException(ErrorCode.USER_NOT_FOUND));
+        Team team = teamRepository.findByTeamCode(teamCode).orElseThrow(()->new NotFoundException(ErrorCode.TEAM_NOT_FOUND));
 
         Participation participation = new Participation(user, team);
         participationRepository.save(participation);
@@ -88,8 +79,7 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public List<VoiceResponseDto> findRegisteredTeamMembers(Long teamId) {
         Team team = teamRepository.findById(teamId).orElseThrow(()-> new NotFoundException(ErrorCode.TEAM_NOT_FOUND));
-
-        List<User> registeredUsers = participationRepository.findRegisteredUsersByTeam(team);
+        List<User> registeredUsers = participationRepository.findRegisteredUsersByTeamId(teamId);
 
         List<VoiceResponseDto> voiceResponseDtos = registeredUsers.stream()
                 .map(user -> VoiceResponseDto.from(user))

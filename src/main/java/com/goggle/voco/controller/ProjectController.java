@@ -1,18 +1,14 @@
 package com.goggle.voco.controller;
 
-import com.goggle.voco.domain.User;
 import com.goggle.voco.dto.ProjectRequestDto;
 import com.goggle.voco.dto.ProjectResponseDto;
 import com.goggle.voco.dto.ProjectsResponseDto;
 import com.goggle.voco.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -33,7 +29,7 @@ public class ProjectController {
     @PostMapping("")
     @Operation(summary = "프로젝트 생성", description = "프로젝트를 생성한다.")
     public ResponseEntity<ProjectResponseDto> createProject(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal Long userId,
             @RequestBody ProjectRequestDto projectRequestDto,
             @PathVariable("teamId") Long teamId) {
 
@@ -45,9 +41,9 @@ public class ProjectController {
     @GetMapping("")
     @Operation(summary = "프로젝트 목록 조회", description = "팀 프로젝트 목록을 조회한다.")
     public ResponseEntity<ProjectsResponseDto> findProjects(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal Long userId,
             @PathVariable("teamId") Long teamId) {
-        ProjectsResponseDto projectsResponseDto = projectService.findProjects(user, teamId);
+        ProjectsResponseDto projectsResponseDto = projectService.findProjects(userId, teamId);
 
         return new ResponseEntity<>(projectsResponseDto, HttpStatus.OK);
     }
@@ -55,9 +51,9 @@ public class ProjectController {
     @GetMapping("/{projectId}")
     @Operation(summary = "프로젝트 상세 조회", description = "팀 프로젝트 상세 내용을 조회한다.")
     public ResponseEntity<ProjectResponseDto> findProjectById(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal Long userId,
             @PathVariable("projectId") Long projectId) {
-        ProjectResponseDto projectResponseDto = projectService.findProjectById(user, projectId);
+        ProjectResponseDto projectResponseDto = projectService.findProjectById(userId, projectId);
 
         return new ResponseEntity<>(projectResponseDto, HttpStatus.OK);
     }
@@ -73,9 +69,9 @@ public class ProjectController {
     @PatchMapping("/{projectId}")
     @Operation(summary = "프로젝트 제목 수정", description = "프로젝트 제목을 수정한다.")
     public ResponseEntity<ProjectResponseDto> updateProjectTitle(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal Long userId,
             @PathVariable("projectId") Long projectId, @RequestBody Map<String, String> body) throws Exception {
-        ProjectResponseDto projectResponseDto = projectService.updateProjectTitle(user, projectId, body.get("title"));
+        ProjectResponseDto projectResponseDto = projectService.updateProjectTitle(userId, projectId, body.get("title"));
 
         return new ResponseEntity<>(projectResponseDto, HttpStatus.OK);
     }

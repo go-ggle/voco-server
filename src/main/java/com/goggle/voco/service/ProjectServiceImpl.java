@@ -3,7 +3,6 @@ package com.goggle.voco.service;
 import com.goggle.voco.domain.Bookmark;
 import com.goggle.voco.domain.Project;
 import com.goggle.voco.domain.Team;
-import com.goggle.voco.domain.User;
 import com.goggle.voco.dto.ProjectRequestDto;
 import com.goggle.voco.dto.ProjectResponseDto;
 import com.goggle.voco.dto.ProjectsResponseDto;
@@ -40,10 +39,11 @@ public class    ProjectServiceImpl implements ProjectService{
     }
 
     @Override
-    public ProjectsResponseDto findProjects(User user, Long teamId) {
+    public ProjectsResponseDto findProjects(Long userId, Long teamId) {
         Team team = teamRepository.findById(teamId).orElseThrow(()->new NotFoundException(ErrorCode.TEAM_NOT_FOUND));
+
         List<Project> projects = projectRepository.findByTeamIdOrderByUpdatedAtDesc(teamId);
-        List<Long> bookmarkedProjectIds = bookmarkRepository.findByUserIdAndTeamId(user.getId(), teamId)
+        List<Long> bookmarkedProjectIds = bookmarkRepository.findByUserIdAndTeamId(userId, teamId)
                 .stream()
                 .map(Bookmark::getProjectId)
                 .collect(Collectors.toList());
@@ -55,9 +55,9 @@ public class    ProjectServiceImpl implements ProjectService{
     }
 
     @Override
-    public ProjectResponseDto findProjectById(User user, Long projectId) {
+    public ProjectResponseDto findProjectById(Long userId, Long projectId) {
         Project project = projectRepository.findById(projectId).orElseThrow(()->new NotFoundException(ErrorCode.PROJECT_NOT_FOUND));
-        boolean isBookmarked = bookmarkRepository.existsByUserAndProject(user, project);
+        boolean isBookmarked = bookmarkRepository.existsByUser_IdAndProject_Id(userId, projectId);
 
         return ProjectResponseDto.from(project, isBookmarked);
     }
@@ -70,13 +70,13 @@ public class    ProjectServiceImpl implements ProjectService{
     }
 
     @Override
-    public ProjectResponseDto updateProjectTitle(User user, Long projectId, String title) throws Exception {
-        Project project = projectRepository.findById(projectId).orElseThrow(()->new Exception("존재하지 않는 프로젝트입니다."));
+    public ProjectResponseDto updateProjectTitle(Long userId, Long projectId, String title) {
+        Project project = projectRepository.findById(projectId).orElseThrow(()->new NotFoundException(ErrorCode.PROJECT_NOT_FOUND));
         project.setTitle(title);
         project.setUpdatedAt(LocalDateTime.now());
         projectRepository.save(project);
 
-        boolean isBookmarked = bookmarkRepository.existsByUserAndProject(user, project);
+        boolean isBookmarked = bookmarkRepository.existsByUser_IdAndProject_Id(userId, projectId);
 
         return ProjectResponseDto.from(project, isBookmarked);
     }
