@@ -156,7 +156,7 @@ public class BlockServiceImpl implements BlockService {
 
         String audioPath = createAudio(audioRequestDto, teamId, projectId, block.getId());
         block.setAudioPath(audioPath);
-        mergeBlocks(teamId, projectId);
+        //mergeBlocks(teamId, projectId);
 
         return BlockResponseDto.from(block);
     }
@@ -176,7 +176,7 @@ public class BlockServiceImpl implements BlockService {
     public void deleteBlock(Long teamId, Long projectId, Long blockId) {
         Block block = blockRepository.findById(blockId).orElseThrow(()->new NotFoundException(ErrorCode.BLOCK_NOT_FOUND));
         blockRepository.delete(block);
-        mergeBlocks(teamId, projectId);
+        //mergeBlocks(teamId, projectId);
     }
 
     @Override
@@ -186,7 +186,7 @@ public class BlockServiceImpl implements BlockService {
         block.setText(audioRequestDto.getText());
         block.setAudioPath(createAudio(audioRequestDto, teamId, projectId, blockId));
         block.setUpdatedAt(LocalDateTime.now());
-        mergeBlocks(teamId, projectId);
+        //mergeBlocks(teamId, projectId);
 
         blockRepository.save(block);
 
