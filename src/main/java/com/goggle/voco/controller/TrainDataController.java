@@ -27,7 +27,7 @@ public class TrainDataController {
     public ResponseEntity<TrainDataResponseDto> getTrain(@PathVariable Long id) {
         TrainDataResponseDto trainDataResponseDto = trainDataService.findTrainById(id);
 
-        return new ResponseEntity<>(trainDataResponseDto, HttpStatus.CREATED);
+        return new ResponseEntity<>(trainDataResponseDto, HttpStatus.OK);
     }
 
     @PostMapping("")

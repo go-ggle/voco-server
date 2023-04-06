@@ -14,6 +14,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.Map;
+
 
 @Controller
 @RequestMapping("/bookmarks")
@@ -40,6 +43,6 @@ public class BookmarkController {
             @PathVariable("projectId") Long projectId) throws Exception {
         bookmarkService.deleteBookmark(user, projectId);
 
-        return ResponseEntity.status(HttpStatus.OK).body("정상적으로 북마크가 해제되었습니다.");
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

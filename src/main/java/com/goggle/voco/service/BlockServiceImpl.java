@@ -94,7 +94,6 @@ public class BlockServiceImpl implements BlockService {
                 }
                 fos.close();
                 String[] cmd = {"sox", projectId + "\\temp" + b.getId() + ".wav", projectId + "\\interval" + b.getId() + ".wav", "pad", "0", String.valueOf(b.getInterval())};
-
                 try {
                     Runtime rt = Runtime.getRuntime();
                     Process pr = rt.exec(cmd);
