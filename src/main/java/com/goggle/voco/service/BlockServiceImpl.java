@@ -93,7 +93,7 @@ public class BlockServiceImpl implements BlockService {
                     fos.write(read_buf, 0, read_len);
                 }
                 fos.close();
-                String[] cmd = {"sox", projectId + "\\temp" + b.getId() + ".wav", projectId + "\\interval" + b.getId() + ".wav", "pad", "0", String.valueOf(b.getInterval())};
+                String[] cmd = {"sox", projectId + "/temp" + b.getId() + ".wav", projectId + "/interval" + b.getId() + ".wav", "pad", "0", String.valueOf(b.getInterval())};
                 try {
                     Runtime rt = Runtime.getRuntime();
                     Process pr = rt.exec(cmd);
@@ -186,7 +186,7 @@ public class BlockServiceImpl implements BlockService {
         block.setText(audioRequestDto.getText());
         block.setAudioPath(createAudio(audioRequestDto, teamId, projectId, blockId));
         block.setUpdatedAt(LocalDateTime.now());
-        //mergeBlocks(teamId, projectId);
+        mergeBlocks(teamId, projectId);
 
         blockRepository.save(block);
 
