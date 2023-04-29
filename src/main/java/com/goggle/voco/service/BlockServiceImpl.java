@@ -94,7 +94,7 @@ public class BlockServiceImpl implements BlockService {
                 }
                 fos.close();
 
-                String[] cmd = {"sox", projectId + "/temp" + b.getId() + ".wav", projectId + "/interval" + b.getId() + ".wav", "pad", "0", "5"};
+                String[] cmd = {"sox", projectId + "/temp" + b.getId() + ".wav", projectId + "/interval" + b.getId() + ".wav", "pad", "0", Long.toString(b.getInterval())};
                 ProcessBuilder pb = new ProcessBuilder(cmd);
                 pb.redirectErrorStream(true);
                 try {
@@ -156,7 +156,7 @@ public class BlockServiceImpl implements BlockService {
 
         String audioPath = createAudio(audioRequestDto, teamId, projectId, block.getId());
         block.setAudioPath(audioPath);
-        //mergeBlocks(teamId, projectId);
+        mergeBlocks(teamId, projectId);
 
         return BlockResponseDto.from(block);
     }
@@ -176,7 +176,7 @@ public class BlockServiceImpl implements BlockService {
     public void deleteBlock(Long teamId, Long projectId, Long blockId) {
         Block block = blockRepository.findById(blockId).orElseThrow(()->new NotFoundException(ErrorCode.BLOCK_NOT_FOUND));
         blockRepository.delete(block);
-        //mergeBlocks(teamId, projectId);
+        mergeBlocks(teamId, projectId);
     }
 
     @Override
