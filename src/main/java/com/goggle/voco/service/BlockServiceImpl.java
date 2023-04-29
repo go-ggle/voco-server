@@ -93,9 +93,12 @@ public class BlockServiceImpl implements BlockService {
                     fos.write(read_buf, 0, read_len);
                 }
                 fos.close();
-                String[] cmd = {"sox", projectId + "/temp" + b.getId() + ".wav", projectId + "/interval" + b.getId() + ".wav", "pad", "0", String.valueOf(b.getInterval())};
+
+                String[] cmd = {"sox", projectId + "\\temp" + b.getId() + ".wav", projectId + "\\interval" + b.getId() + ".wav", "pad", "0", "5"};
+                ProcessBuilder pb = new ProcessBuilder(cmd);
+                pb.redirectErrorStream(true);
                 try {
-                    Runtime rt = Runtime.getRuntime();
+                    /*Runtime rt = Runtime.getRuntime();
                     Process pr = rt.exec(cmd);
                     BufferedReader input = new BufferedReader(new InputStreamReader(pr.getInputStream()));
 
@@ -106,7 +109,16 @@ public class BlockServiceImpl implements BlockService {
                     }
 
                     int exitVal = pr.waitFor();
-                    System.out.println("Exited with error code " + exitVal);
+                    System.out.println("Exited with error code " + exitVal);*/
+                    Process p = pb.start();
+                    InputStream is = p.getInputStream();
+                    int in = -1;
+                    while ((in = is.read()) != -1) {
+                        System.out.print((char)in);
+                    }
+                    p.waitFor();
+                    int exitWith = p.exitValue();
+                    System.out.println("\nExited with " + exitWith);
                 } catch(Exception e) {
                     System.out.println(e.toString());
                     e.printStackTrace();
