@@ -15,6 +15,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import javax.transaction.Transactional;
+
 @Service
 @Log4j2
 @RequiredArgsConstructor
@@ -26,36 +28,29 @@ public class OAuthServiceImpl implements OAuthService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
+    @Transactional
     public TokenResponseDto createKakaoUserToken(KakaoTokenRequestDto kakaoTokenRequestDto) {
         WebClient webClient = WebClient.builder().baseUrl("https://kapi.kakao.com/v1/oidc/userinfo").build();
-        String token = kakaoTokenRequestDto.getAccessToken();
 
-        KakaoUserResponseDto response = webClient.get()
-                .headers(h -> h.setBearerAuth(token))
+        KakaoUserResponseDto kakaoUserResponseDto = webClient.get()
+                .headers(h -> h.setBearerAuth(kakaoTokenRequestDto.getAccessToken()))
                 .retrieve()
                 .bodyToMono(KakaoUserResponseDto.class)
                 .block();
 
-        User user = userRepository.findBySocialTypeAndSocialId("kakao", response.getId()).orElse(createKakaoUser(token));
+        User user = userRepository.findBySocialTypeAndSocialId("kakao", kakaoUserResponseDto.getSub()).orElse(createKakaoUser(kakaoUserResponseDto));
         String accessToken = jwtTokenProvider.createToken(String.valueOf(user.getId()));
 
         return new TokenResponseDto(accessToken, user.getPrivateTeamId());
     }
 
     @Override
-    public User createKakaoUser(String token) {
-        WebClient webClient = WebClient.builder().baseUrl("https://kapi.kakao.com/v2/user/me").build();
-
-        KakaoUserResponseDto response = webClient.get()
-                .headers(h -> h.setBearerAuth(token))
-                .retrieve()
-                .bodyToMono(KakaoUserResponseDto.class)
-                .block();
-
+    @Transactional
+    public User createKakaoUser(KakaoUserResponseDto kakaoUserResponseDto) {
         User user = User.builder()
                 .socialType("kakao")
-                .socialId(response.getId())
-                .nickname(response.getProperties().getNickname())
+                .socialId(kakaoUserResponseDto.getSub())
+                .nickname(kakaoUserResponseDto.getNickname())
                 .build();
         userRepository.save(user);
 

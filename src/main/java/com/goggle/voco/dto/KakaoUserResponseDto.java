@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class KakaoUserResponseDto {
-    private Long id;
-    private KakaoUserPropertyDto properties;
+    private Long sub;
+    private String nickname;
 }
 
