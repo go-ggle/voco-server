@@ -4,7 +4,8 @@ import com.goggle.voco.config.security.JwtTokenProvider;
 import com.goggle.voco.domain.Participation;
 import com.goggle.voco.domain.Team;
 import com.goggle.voco.domain.User;
-import com.goggle.voco.dto.KakaoReponseDto;
+import com.goggle.voco.dto.KakaoTokenRequestDto;
+import com.goggle.voco.dto.KakaoUserResponseDto;
 import com.goggle.voco.dto.TokenResponseDto;
 import com.goggle.voco.repository.ParticipationRepository;
 import com.goggle.voco.repository.TeamRepository;
@@ -25,13 +26,14 @@ public class OAuthServiceImpl implements OAuthService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
-    public TokenResponseDto createKakaoUserToken(String token) {
+    public TokenResponseDto createKakaoUserToken(KakaoTokenRequestDto kakaoTokenRequestDto) {
         WebClient webClient = WebClient.builder().baseUrl("https://kapi.kakao.com/v1/oidc/userinfo").build();
+        String token = kakaoTokenRequestDto.getAccessToken();
 
-        KakaoReponseDto response = webClient.get()
+        KakaoUserResponseDto response = webClient.get()
                 .headers(h -> h.setBearerAuth(token))
                 .retrieve()
-                .bodyToMono(KakaoReponseDto.class)
+                .bodyToMono(KakaoUserResponseDto.class)
                 .block();
 
         User user = userRepository.findBySocialTypeAndSocialId("kakao", response.getId()).orElse(createKakaoUser(token));
@@ -44,10 +46,10 @@ public class OAuthServiceImpl implements OAuthService {
     public User createKakaoUser(String token) {
         WebClient webClient = WebClient.builder().baseUrl("https://kapi.kakao.com/v2/user/me").build();
 
-        KakaoReponseDto response = webClient.get()
+        KakaoUserResponseDto response = webClient.get()
                 .headers(h -> h.setBearerAuth(token))
                 .retrieve()
-                .bodyToMono(KakaoReponseDto.class)
+                .bodyToMono(KakaoUserResponseDto.class)
                 .block();
 
         User user = User.builder()

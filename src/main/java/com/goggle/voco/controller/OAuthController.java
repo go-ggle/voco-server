@@ -1,6 +1,7 @@
 package com.goggle.voco.controller;
 
 import com.goggle.voco.domain.User;
+import com.goggle.voco.dto.KakaoTokenRequestDto;
 import com.goggle.voco.dto.TokenResponseDto;
 import com.goggle.voco.service.OAuthService;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +22,9 @@ public class OAuthController {
     private final OAuthService oAuthService;
 
     @PostMapping("kakao")
-    public ResponseEntity<TokenResponseDto> createKakaoUserToken(@RequestBody String token) {
+    public ResponseEntity<TokenResponseDto> createKakaoUserToken(@RequestBody KakaoTokenRequestDto kakaoTokenRequestDto) {
 
-        TokenResponseDto tokenResponseDto = oAuthService.createKakaoUserToken(token);
+        TokenResponseDto tokenResponseDto = oAuthService.createKakaoUserToken(kakaoTokenRequestDto);
 
         return new ResponseEntity<>(tokenResponseDto, HttpStatus.OK);
     }
