@@ -18,6 +18,8 @@ public class BlockResponseDto {
     private Long id;
     private String text;
     private String audioPath;
+    private Long interval;
+    private Long voiceId;
 
     @JsonFormat(pattern = "yyyy년 MM월 dd일 HH:mm")
     private LocalDateTime updatedAt;
@@ -27,6 +29,8 @@ public class BlockResponseDto {
             block.getId(),
             block.getText(),
             block.getAudioPath(),
+            block.getInterval(),
+            block.getVoiceId(),
             block.getUpdatedAt()
         );
     }
