@@ -20,6 +20,7 @@ import javax.transaction.Transactional;
 @Service
 @Log4j2
 @RequiredArgsConstructor
+@Transactional
 public class OAuthServiceImpl implements OAuthService {
 
     private final UserRepository userRepository;
@@ -28,7 +29,6 @@ public class OAuthServiceImpl implements OAuthService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
-    @Transactional
     public TokenResponseDto createKakaoUserToken(KakaoTokenRequestDto kakaoTokenRequestDto) {
         WebClient webClient = WebClient.builder().baseUrl("https://kapi.kakao.com/v1/oidc/userinfo").build();
 
@@ -38,14 +38,13 @@ public class OAuthServiceImpl implements OAuthService {
                 .bodyToMono(KakaoUserResponseDto.class)
                 .block();
 
-        User user = userRepository.findBySocialTypeAndSocialId("kakao", kakaoUserResponseDto.getSub()).orElse(createKakaoUser(kakaoUserResponseDto));
+        User user = userRepository.findBySocialTypeAndSocialId("kakao", kakaoUserResponseDto.getSub()).orElseGet(()->createKakaoUser(kakaoUserResponseDto));
         String accessToken = jwtTokenProvider.createToken(String.valueOf(user.getId()));
 
         return new TokenResponseDto(accessToken, user.getPrivateTeamId());
     }
 
     @Override
-    @Transactional
     public User createKakaoUser(KakaoUserResponseDto kakaoUserResponseDto) {
         User user = User.builder()
                 .socialType("kakao")
