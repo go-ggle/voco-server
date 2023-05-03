@@ -12,4 +12,5 @@ public class AudioRequestDto {
     private Long language;
     private Long voiceId;
     private Long interval;
+    private Long order;
 }

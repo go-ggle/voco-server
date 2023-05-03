@@ -3,6 +3,7 @@ package com.goggle.voco.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Getter
@@ -23,16 +24,20 @@ public class Block extends BaseEntity {
     private Long voiceId;
     @Column(name="\"interval\"")
     private Long interval;
+    @Column(name="\"order\"")
+    @NotNull
+    private Long order;
 
     @ManyToOne
     private Project project;
 
-    public Block(Project project, String text, String audioPath, Long voiceId, Long interval) {
+    public Block(Project project, String text, String audioPath, Long voiceId, Long interval, Long order) {
         this.project = project;
         this.text = text;
         this.audioPath = audioPath;
         this.voiceId = voiceId;
         this.interval = interval;
+        this.order = order;
     }
 
 }

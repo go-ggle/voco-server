@@ -145,13 +145,31 @@ public class BlockServiceImpl implements BlockService {
     }
 
     @Override
+    public void increaseOrders(Long projectId, Long order){
+        List<Block> blocks = blockRepository.findByProjectId(projectId);
+        blocks.stream()
+                .filter(b -> b.getOrder() >= order)
+                .forEach(b -> b.setOrder(b.getOrder() + 1));
+    }
+
+    @Override
+    public void decreaseOrders(Long projectId, Long order){
+        List<Block> blocks = blockRepository.findByProjectId(projectId);
+        blocks.stream()
+                .filter(b -> b.getOrder() > order)
+                .forEach(b -> b.setOrder(b.getOrder() - 1));
+    }
+
+    @Override
     public BlockResponseDto createBlock(AudioRequestDto audioRequestDto, Long teamId, Long projectId) {
         String text = audioRequestDto.getText();
         Long voiceId = audioRequestDto.getVoiceId();
         Long interval = audioRequestDto.getInterval();
+        Long order = audioRequestDto.getOrder();
 
         Project project = projectRepository.findById(projectId).orElseThrow(()-> new NotFoundException(ErrorCode.PROJECT_NOT_FOUND));
-        Block block = new Block(project, text, "", voiceId, interval);
+        Block block = new Block(project, text, "", voiceId, interval, order);
+        increaseOrders(projectId, order);
         blockRepository.save(block);
 
         String audioPath = createAudio(audioRequestDto, teamId, projectId, block.getId());
@@ -175,6 +193,7 @@ public class BlockServiceImpl implements BlockService {
     @Override
     public void deleteBlock(Long teamId, Long projectId, Long blockId) {
         Block block = blockRepository.findById(blockId).orElseThrow(()->new NotFoundException(ErrorCode.BLOCK_NOT_FOUND));
+        decreaseOrders(projectId, block.getOrder());
         blockRepository.delete(block);
         mergeBlocks(teamId, projectId);
     }
