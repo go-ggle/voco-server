@@ -23,6 +23,7 @@ import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -173,7 +174,9 @@ public class BlockServiceImpl implements BlockService {
         blockRepository.save(block);
 
         String audioPath = createAudio(audioRequestDto, teamId, projectId, block.getId());
+        block = blockRepository.findById(block.getId()).orElseThrow(() -> new NotFoundException(ErrorCode.BLOCK_NOT_FOUND));
         block.setAudioPath(audioPath);
+        blockRepository.save(block);
         mergeBlocks(teamId, projectId);
 
         return BlockResponseDto.from(block);
@@ -183,6 +186,7 @@ public class BlockServiceImpl implements BlockService {
     public BlocksResponseDto findBlocks(Long projectId) {
         List<Block> blocks = blockRepository.findByProjectId(projectId);
         List<BlockResponseDto> blocksResponseDtos = blocks.stream()
+                .sorted(Comparator.comparing(block -> block.getOrder()))
                 .map(block -> BlockResponseDto.from(block))
                 .collect(Collectors.toList());
 
