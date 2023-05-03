@@ -20,12 +20,16 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TrainServiceImpl implements TrainService{
     private final UserRepository userRepository;
+    private final FCMService fcmService;
 
     @Override
     public void finishTrain(Long userId){
         User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
         user.setIsRegistered(Boolean.TRUE);
         userRepository.save(user);
+
+        fcmService.sendToToken(user, "모델 훈련 완료", "모델 훈련 끝남ㅎ");
     }
 
     @Override
