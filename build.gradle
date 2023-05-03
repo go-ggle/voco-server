@@ -39,6 +39,8 @@ dependencies {
 	implementation group: 'org.springdoc', name: 'springdoc-openapi-security', version: '1.6.15'
 	// WebClient 의존성
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	// FCM
+	implementation 'com.google.firebase:firebase-admin:7.1.0'
 }
 
 tasks.named('test') {
