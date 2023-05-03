@@ -3,6 +3,8 @@ package com.goggle.voco.service;
 import com.goggle.voco.domain.User;
 import com.goggle.voco.dto.TrainRequestDto;
 import com.goggle.voco.dto.TrainResponseDto;
+import com.goggle.voco.exception.ErrorCode;
+import com.goggle.voco.exception.NotFoundException;
 import com.goggle.voco.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -18,6 +20,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TrainServiceImpl implements TrainService{
     private final UserRepository userRepository;
+
+    @Override
+    public void finishTrain(Long userId){
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+        user.setIsRegistered(Boolean.TRUE);
+        userRepository.save(user);
+    }
 
     @Override
     public void startTrain(TrainRequestDto trainRequestDto) throws Exception {
@@ -36,7 +45,7 @@ public class TrainServiceImpl implements TrainService{
                     .bodyValue(trainRequestDto)
                     .retrieve()
                     .bodyToMono(TrainResponseDto.class)
-                    .subscribe(result -> {user.setIsRegistered(Boolean.TRUE); userRepository.save(user);});
+                    .subscribe(result -> finishTrain(user.getId()));
         } else {
             throw new Exception();
         }
