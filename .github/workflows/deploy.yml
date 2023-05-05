@@ -29,11 +29,6 @@ jobs:
           mkdir ./src/main/resources
           touch ./src/main/resources/application.properties
           echo "${{ secrets.PROPERTIES }}" >> ./src/main/resources/application.properties   
-
-      - name: Create firebase secret key file
-        run: |
-          touch ./src/main/resources/firebase.json
-          echo "${{ secrets.FIREBASE_SECRET_KEY }}" >> ./src/main/resources/firebase.json
       
       - name: Build with Gradle
         run: ./gradlew build
