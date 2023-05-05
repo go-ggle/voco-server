@@ -29,7 +29,7 @@ jobs:
         with:
           files: ./src/main/resources/application-dev.yml
         env:
-          spring.datasource.url: ${{ secrets.DATABASE_URL }}
+          spring.datasource.url: '${{ secrets.DATABASE_URL }}'
           spring.datasource.username: ${{ secrets.DATABASE_USERNAME }}
           spring.datasource.password: ${{ secrets.DATABASE_PASSWORD }}
           cloud.aws.s3.credentials.access-key: ${{ secrets.S3_ACCESS_KEY }}
