@@ -44,13 +44,13 @@ public class BlockServiceImpl implements BlockService {
     private final ProjectRepository projectRepository;
     private final AmazonS3Client amazonS3Client;
 
-    @Value("${AUDIO_BUCKET_NAME}")
+    @Value("${ai.audio-bucket-name}")
     private String AUDIO_BUCKET_NAME;
-    @Value("${AWS_REGION}")
+    @Value("${cloud.aws.region.static}")
     private String AWS_REGION;
-    @Value("${AI_ADDRESS}")
+    @Value("${ai.address}")
     private String AI_ADDRESS;
-    @Value("${FLASK_PORT}")
+    @Value("${ai.port}")
     private String FLASK_PORT;
 
     @Override
