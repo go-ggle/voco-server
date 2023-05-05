@@ -24,6 +24,7 @@ jobs:
         run: chmod +x ./gradlew
         shell: bash
         
+<<<<<<< HEAD
       - name: Set application yaml
         uses: microsoft/variable-substitution@v1
         with:
