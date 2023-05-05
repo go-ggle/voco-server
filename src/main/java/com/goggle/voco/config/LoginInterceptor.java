@@ -1,7 +1,6 @@
 package com.goggle.voco.config;
 
 import com.goggle.voco.config.security.JwtTokenProvider;
-import com.goggle.voco.domain.User;
 import com.goggle.voco.exception.ErrorCode;
 import com.goggle.voco.exception.UnauthorizedException;
 import lombok.RequiredArgsConstructor;
