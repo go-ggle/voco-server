@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -58,7 +59,13 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public List<TeamResponseDto> findTeams(Long userId) {
-        List<Team> teams = participationRepository.findTeamsByUserId(userId);
+        Team privateTeam = participationRepository.findPrivateTeamByUserId(userId);
+        List<Team> publicTeams = participationRepository.findTeamsByUserId(userId);
+
+        List<Team> teams = new ArrayList<>();
+        teams.add(privateTeam);
+        teams.addAll(publicTeams);
+
         List<TeamResponseDto> teamResponseDtos = teams.stream()
                 .map(team -> TeamResponseDto.from(team))
                 .collect(Collectors.toList());
