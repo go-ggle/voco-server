@@ -18,9 +18,9 @@ import java.net.URI;
 @Log4j2
 @RequiredArgsConstructor
 public class AudioInputServiceImpl implements AudioInputService{
-    @Value("${AI_ADDRESS}")
+    @Value("${ai.address}")
     private String AI_ADDRESS;
-    @Value("${FLASK_PORT}")
+    @Value("${ai.port}")
     private String FLASK_PORT;
 
     @Override
