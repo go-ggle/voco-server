@@ -1,8 +1,5 @@
 package com.goggle.voco.controller;
 
-import com.goggle.voco.domain.User;
-import com.goggle.voco.dto.AudioInputRequestDto;
-import com.goggle.voco.dto.AudioInputResponseDto;
 import com.goggle.voco.service.AudioInputService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -25,12 +22,12 @@ public class AudioInputController {
 
     @PostMapping("/{textId}")
     public ResponseEntity<String> audioInput(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal Long userId,
             @PathVariable("textId") Long textId,
             @RequestPart MultipartFile audio
     ) throws IOException {
 
-        audioInputService.audioInput(user, textId, audio);
+        audioInputService.audioInput(userId, textId, audio);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

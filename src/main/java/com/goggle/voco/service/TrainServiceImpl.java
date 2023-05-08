@@ -1,14 +1,11 @@
 package com.goggle.voco.service;
 
 import com.goggle.voco.domain.User;
-import com.goggle.voco.dto.TrainRequestDto;
-import com.goggle.voco.dto.TrainResponseDto;
 import com.goggle.voco.exception.ErrorCode;
 import com.goggle.voco.exception.NotFoundException;
 import com.goggle.voco.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -33,8 +30,8 @@ public class TrainServiceImpl implements TrainService{
     }
 
     @Override
-    public void startTrain(TrainRequestDto trainRequestDto) throws Exception {
-        Optional<User> selectedUser = userRepository.findById(trainRequestDto.getUserId());
+    public void startTrain(Long userId) throws Exception {
+        Optional<User> selectedUser = userRepository.findById(userId);
 
         if(selectedUser.isPresent()){
             User user = selectedUser.get();
@@ -44,12 +41,14 @@ public class TrainServiceImpl implements TrainService{
                     .build();
 
             client.post()
-                    .uri("/train")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(trainRequestDto)
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/train")
+                            .queryParam("user_id", "{userId}")
+                            .build(userId.intValue()))
                     .retrieve()
-                    .bodyToMono(TrainResponseDto.class)
+                    .bodyToMono(String.class)
                     .subscribe(result -> finishTrain(user.getId()));
+
         } else {
             throw new Exception();
         }

@@ -1,6 +1,5 @@
 package com.goggle.voco.service;
 
-import com.goggle.voco.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,12 +24,12 @@ public class AudioInputServiceImpl implements AudioInputService{
     private String FLASK_PORT;
 
     @Override
-    public void audioInput(User user, Long textId, MultipartFile audio) throws IOException {
+    public void audioInput(Long userId, Long textId, MultipartFile audio) throws IOException {
         URI uri = UriComponentsBuilder
                 .fromUriString("http://" + AI_ADDRESS + ":" + FLASK_PORT)
                 .path("/put_data")
                 .queryParam("textId", textId)
-                .queryParam("userId", user.getId())
+                .queryParam("userId", userId)
                 .encode()
                 .build()
                 .toUri();
