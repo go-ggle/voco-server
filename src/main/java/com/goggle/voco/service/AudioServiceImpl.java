@@ -1,15 +1,21 @@
 package com.goggle.voco.service;
 
+import com.goggle.voco.exception.ErrorCode;
+import com.goggle.voco.exception.NotFoundException;
+import com.google.api.Http;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.net.URI;
@@ -17,7 +23,7 @@ import java.net.URI;
 @Service
 @Log4j2
 @RequiredArgsConstructor
-public class AudioInputServiceImpl implements AudioInputService{
+public class AudioServiceImpl implements AudioService {
     @Value("${ai.address}")
     private String AI_ADDRESS;
     @Value("${ai.port}")
@@ -82,5 +88,25 @@ public class AudioInputServiceImpl implements AudioInputService{
                 .retrieve()
                 .bodyToMono(AudioInputResponseDto.class)
                 .block();*/
+    }
+
+
+    @Override
+    public Mono<ByteArrayResource> getAudio(Long userId, Long textId){
+        WebClient webClient = WebClient.create("http://" + AI_ADDRESS + ":" + FLASK_PORT);
+
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/audios")
+                        .queryParam("user_id", "{userId}")
+                        .queryParam("text_id", "{textId}")
+                        .build(userId.intValue(), textId.intValue()))
+                .exchangeToMono(response -> {
+                    if (response.statusCode().equals(HttpStatus.OK))
+                        return response.bodyToMono(ByteArrayResource.class);
+                    if (response.statusCode().equals(HttpStatus.NOT_FOUND))
+                        throw new NotFoundException(ErrorCode.AUDIO_NOT_FOUND);
+                    return null;
+                });
     }
 }
