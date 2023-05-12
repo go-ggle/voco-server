@@ -28,7 +28,8 @@ public class JwtTokenProvider {
     private final UserDetailsService userDetailsService;
 
     private String secretKey = "secretKey";
-    private final long tokenValidMillisecond = 1000L * 60 * 60;
+    private final long tokenValidMillisecond = 1000L * 60; // 1분
+    private final long refreshTokenValidMillisecond = 1000L * 60 * 60 * 24 * 30; //30일
 
     @PostConstruct
     protected void init() {
@@ -42,6 +43,17 @@ public class JwtTokenProvider {
                 .setSubject(payload)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + tokenValidMillisecond))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+    }
+
+    public String createRefreshToken(final String payload) {
+        final Date now = new Date();
+
+        return Jwts.builder()
+                .setSubject(payload)
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + refreshTokenValidMillisecond))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }

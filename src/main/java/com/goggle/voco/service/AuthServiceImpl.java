@@ -4,13 +4,10 @@ import com.goggle.voco.config.security.JwtTokenProvider;
 import com.goggle.voco.domain.Participation;
 import com.goggle.voco.domain.Team;
 import com.goggle.voco.domain.User;
-import com.goggle.voco.dto.TokenRequestDto;
-import com.goggle.voco.dto.TokenResponseDto;
-import com.goggle.voco.dto.UserRequestDto;
-import com.goggle.voco.dto.UserResponseDto;
-import com.goggle.voco.exception.BadRequestException;
+import com.goggle.voco.dto.*;
 import com.goggle.voco.exception.ErrorCode;
 import com.goggle.voco.exception.NotFoundException;
+import com.goggle.voco.exception.UnauthorizedException;
 import com.goggle.voco.repository.ParticipationRepository;
 import com.goggle.voco.repository.TeamRepository;
 import com.goggle.voco.repository.UserRepository;
@@ -34,7 +31,11 @@ public class AuthServiceImpl implements AuthService {
     public UserResponseDto createUser(UserRequestDto userRequestDto) {
         String password = passwordEncoder.encode(userRequestDto.getPassword());
 
-        User user = new User(userRequestDto.getEmail(), userRequestDto.getNickname(), password);
+        User user = User.builder()
+                .email(userRequestDto.getEmail())
+                .nickname(userRequestDto.getNickname())
+                .password(password)
+                .build();
         userRepository.save(user);
 
         Team team = new Team(user, true);
@@ -58,7 +59,32 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String accessToken = jwtTokenProvider.createToken(String.valueOf(user.getId()));
+        String refreshToken = jwtTokenProvider.createRefreshToken(String.valueOf(user.getId()));
 
-        return new TokenResponseDto(accessToken, user.getPrivateTeamId());
+        user.setRefreshToken(refreshToken);
+        userRepository.save(user);
+
+        return new TokenResponseDto(accessToken, refreshToken, user.getPrivateTeamId());
+    }
+
+    @Override
+    public TokenRenewResponseDto renewToken(TokenRenewRequestDto tokenRenewRequestDto) {
+        String refreshToken=tokenRenewRequestDto.getRefreshToken();
+
+        if (!jwtTokenProvider.validateToken(refreshToken)) {
+            throw new UnauthorizedException(ErrorCode.INVALID_AUTH_TOKEN);
+        }
+
+        Long userId = jwtTokenProvider.getUserId(refreshToken);
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+        String userRefreshToken = user.getRefreshToken();
+
+        if(!refreshToken.equals(userRefreshToken)) {
+            throw new UnauthorizedException(ErrorCode.INVALID_AUTH_TOKEN);
+        }
+
+        String accessToken = jwtTokenProvider.createToken(String.valueOf(user.getId()));
+
+        return new TokenRenewResponseDto(accessToken);
     }
 }
