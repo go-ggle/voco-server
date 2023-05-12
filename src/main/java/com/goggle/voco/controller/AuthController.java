@@ -1,10 +1,7 @@
 package com.goggle.voco.controller;
 
 import com.goggle.voco.domain.User;
-import com.goggle.voco.dto.TokenRequestDto;
-import com.goggle.voco.dto.TokenResponseDto;
-import com.goggle.voco.dto.UserRequestDto;
-import com.goggle.voco.dto.UserResponseDto;
+import com.goggle.voco.dto.*;
 import com.goggle.voco.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,5 +37,12 @@ public class AuthController {
         TokenResponseDto tokenResponseDto = authService.createToken(tokenRequestDto);
 
         return new ResponseEntity<>(tokenResponseDto, HttpStatus.OK);
+    }
+    @PostMapping("renew")
+    @Operation(summary = "토큰 갱신", description = "리프레시 토큰으로 액세스 토큰을 갱신한다.")
+    public ResponseEntity<TokenRenewResponseDto> renew(@RequestBody TokenRenewRequestDto tokenRenewRequestDto) {
+        TokenRenewResponseDto tokenRenewResponseDto = authService.renewToken(tokenRenewRequestDto);
+
+        return new ResponseEntity<>(tokenRenewResponseDto, HttpStatus.OK);
     }
 }

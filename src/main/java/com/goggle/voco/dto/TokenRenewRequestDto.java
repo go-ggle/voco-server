@@ -7,10 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRequestDto {
-
-    private String email;
-    private String nickname;
-    private String password;
-    private String fcmToken;
+public class TokenRenewRequestDto {
+    private String refreshToken;
 }
