@@ -35,7 +35,6 @@ public class AuthServiceImpl implements AuthService {
                 .email(userRequestDto.getEmail())
                 .nickname(userRequestDto.getNickname())
                 .password(password)
-                .fcmToken(userRequestDto.getFcmToken())
                 .build();
         userRepository.save(user);
 
