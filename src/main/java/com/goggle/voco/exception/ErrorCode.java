@@ -18,7 +18,8 @@ public enum ErrorCode {
     TEAM_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 팀이 존재하지 않습니다."),
     PROJECT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 프로젝트가 존재하지 않습니다."),
     BLOCK_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 블럭이 존재하지 않습니다."),
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 유저가 존재하지 않습니다.");
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 유저가 존재하지 않습니다."),
+    AUDIO_NOT_FOUND(HttpStatus.NOT_FOUND, "저장된 음성이 없습니다.");
 
 
     private final HttpStatus httpStatus;
