@@ -3,12 +3,14 @@ package com.goggle.voco.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
@@ -82,5 +84,22 @@ public class AudioServiceImpl implements AudioService {
                 .retrieve()
                 .bodyToMono(AudioInputResponseDto.class)
                 .block();*/
+    }
+
+
+    @Override
+    public ResponseEntity<ByteArrayResource> getAudio(Long userId, Long textId){
+        WebClient webClient = WebClient.create("http://" + AI_ADDRESS + ":" + FLASK_PORT);
+
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/audios")
+                        .queryParam("user_id", "{userId}")
+                        .queryParam("text_id", "{textId}")
+                        .build(userId.intValue(), textId.intValue()))
+                .retrieve()
+                .toEntity(ByteArrayResource.class)
+                .block();
+
     }
 }
