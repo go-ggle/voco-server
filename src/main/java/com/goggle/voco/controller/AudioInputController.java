@@ -1,6 +1,6 @@
 package com.goggle.voco.controller;
 
-import com.goggle.voco.service.AudioInputService;
+import com.goggle.voco.service.AudioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class AudioInputController {
 
-    private final AudioInputService audioInputService;
+    private final AudioService audioInputService;
 
     @PostMapping("/{textId}")
     public ResponseEntity<String> audioInput(

@@ -17,7 +17,7 @@ import java.net.URI;
 @Service
 @Log4j2
 @RequiredArgsConstructor
-public class AudioInputServiceImpl implements AudioInputService{
+public class AudioServiceImpl implements AudioService {
     @Value("${ai.address}")
     private String AI_ADDRESS;
     @Value("${ai.port}")
