@@ -95,7 +95,7 @@ public class AudioServiceImpl implements AudioService {
     public Mono<ByteArrayResource> getAudio(Long userId, Long textId){
         WebClient webClient = WebClient.create("http://" + AI_ADDRESS + ":" + FLASK_PORT);
 
-        Mono<ByteArrayResource>  responseEntity = webClient.get()
+        return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/audios")
                         .queryParam("user_id", "{userId}")
@@ -108,7 +108,5 @@ public class AudioServiceImpl implements AudioService {
                         throw new NotFoundException(ErrorCode.AUDIO_NOT_FOUND);
                     return null;
                 });
-
-        return responseEntity;
     }
 }
