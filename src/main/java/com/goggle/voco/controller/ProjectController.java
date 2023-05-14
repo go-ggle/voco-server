@@ -60,8 +60,10 @@ public class ProjectController {
 
     @DeleteMapping("/{projectId}")
     @Operation(summary = "프로젝트 삭제", description = "특정 팀 프로젝트를 삭제한다.")
-    public ResponseEntity<String> deleteProject(@PathVariable("projectId") Long projectId) throws Exception {
-        projectService.deleteProject(projectId);
+    public ResponseEntity<String> deleteProject(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable("projectId") Long projectId) throws Exception {
+        projectService.deleteProject(userId, projectId);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

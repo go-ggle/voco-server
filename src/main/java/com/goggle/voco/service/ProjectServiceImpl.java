@@ -63,7 +63,7 @@ public class ProjectServiceImpl implements ProjectService{
     }
 
     @Override
-    public void deleteProject(Long projectId) {
+    public void deleteProject(Long userId, Long projectId) {
         Project project = projectRepository.findById(projectId).orElseThrow(()->new NotFoundException(ErrorCode.PROJECT_NOT_FOUND));
 
         projectRepository.delete(project);
