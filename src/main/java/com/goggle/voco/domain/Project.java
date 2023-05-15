@@ -27,6 +27,8 @@ public class Project extends BaseEntity{
 
     @OneToMany(mappedBy = "project", cascade = {CascadeType.ALL}, orphanRemoval=true)
     private List<Block> blocks;
+    @OneToMany(mappedBy = "project", cascade = {CascadeType.ALL}, orphanRemoval=true)
+    private List<Bookmark> bookmarks;
 
     public Project(Long language, String title, Team team) {
         this.title = title;
