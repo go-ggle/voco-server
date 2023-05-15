@@ -1,13 +1,11 @@
 package com.goggle.voco.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.goggle.voco.domain.Block;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
