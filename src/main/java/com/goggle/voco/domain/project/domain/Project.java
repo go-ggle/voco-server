@@ -1,5 +1,7 @@
 package com.goggle.voco.domain.project.domain;
 
+import com.goggle.voco.domain.block.domain.Block;
+import com.goggle.voco.domain.bookmark.domain.Bookmark;
 import com.goggle.voco.domain.team.domain.Team;
 import com.goggle.voco.global.entity.BaseEntity;
 import lombok.*;
