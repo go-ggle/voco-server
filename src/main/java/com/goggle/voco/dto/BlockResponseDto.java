@@ -27,8 +27,8 @@ public class BlockResponseDto {
             block.getId(),
             block.getText(),
             block.getAudioPath(),
-            block.getInterval(),
             block.getVoiceId(),
+            block.getInterval(),
             block.getOrder()
         );
     }
