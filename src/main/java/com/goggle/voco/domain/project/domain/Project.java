@@ -1,0 +1,35 @@
+package com.goggle.voco.domain.project.domain;
+
+import com.goggle.voco.domain.team.domain.Team;
+import com.goggle.voco.global.entity.BaseEntity;
+import lombok.*;
+
+import javax.persistence.*;
+
+@Entity
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString(exclude = "team")
+public class Project extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column
+    private String title;
+    private Long language;
+
+    @ManyToOne
+    private Team team;
+
+    public Project(Long language, String title, Team team) {
+        this.title = title;
+        this.language = language;
+        this.team = team;
+    }
+
+}

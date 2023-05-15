@@ -1,8 +1,6 @@
 package com.goggle.voco.config.security;
 
-import com.goggle.voco.exception.ErrorCode;
-import com.goggle.voco.exception.UnauthorizedException;
-import com.goggle.voco.service.UserDetailsService;
+import com.goggle.voco.domain.user.service.UserDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
