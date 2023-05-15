@@ -97,7 +97,8 @@ public class BlockServiceImpl implements BlockService {
                 }
                 catch (AmazonServiceException e) {
                     System.err.println(e.getErrorMessage());
-                    if(Objects.equals(e.getErrorMessage(), "NoSuchKey")){
+                    System.err.println(e.getErrorCode());
+                    if(Objects.equals(e.getErrorCode(), "NoSuchKey")){
                         continue;
                     }
                     else {
