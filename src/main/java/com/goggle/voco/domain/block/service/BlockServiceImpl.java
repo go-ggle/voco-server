@@ -119,6 +119,7 @@ public class BlockServiceImpl implements BlockService {
                 list.add(clip);
                 length += clip.getFrameLength();
             }
+
             if(length>0 && list.size()>0 && clip!=null) {
                 AudioInputStream appendedFiles =
                         new AudioInputStream(
@@ -129,8 +130,9 @@ public class BlockServiceImpl implements BlockService {
                 AudioSystem.write(appendedFiles,
                         AudioFileFormat.Type.WAVE,
                         new File(projectId + "/appended.wav"));
+                clip.close();
             }
-            clip.close();
+
             amazonS3Client.putObject(AUDIO_BUCKET_NAME, teamId + "/" + projectId + "/0.wav", new File(projectId + "/appended.wav"));
             FileUtils.deleteDirectory(new File(String.valueOf(projectId)));
         } catch (AmazonServiceException e) {
