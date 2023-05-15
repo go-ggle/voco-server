@@ -41,7 +41,7 @@ public class BookmarkServiceImpl implements BookmarkService{
     @Override
     public void deleteBookmark(Long userId, Long projectId) {
         Project project = projectRepository.findById(projectId).orElseThrow(()-> new NotFoundException(ErrorCode.PROJECT_NOT_FOUND));
-        Bookmark bookmark = bookmarkRepository.findByUser_IdAndProject_Id(userId, projectId).orElseThrow();
+        Bookmark bookmark = bookmarkRepository.findByUser_IdAndProject_Id(userId, projectId).orElseThrow(()-> new NotFoundException(ErrorCode.BOOKMARK_NOT_FOUND));
 
         bookmarkRepository.delete(bookmark);
     }
