@@ -24,10 +24,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.*;
 import java.net.URI;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.amazonaws.services.s3.model.S3Object;
@@ -88,14 +85,25 @@ public class BlockServiceImpl implements BlockService {
             new File(String.valueOf(projectId)).mkdirs();
             for (Block b: blocks) {
                 FileOutputStream fos = new FileOutputStream(new File(projectId + "/temp" + b.getId() + ".wav"));
-                S3Object o = amazonS3Client.getObject(AUDIO_BUCKET_NAME, teamId + "/" + projectId + "/" + b.getId() + ".wav");
-                S3ObjectInputStream s3is = o.getObjectContent();
-                byte[] read_buf = new byte[1024];
-                int read_len = 0;
-                while ((read_len = s3is.read(read_buf)) > 0) {
-                    fos.write(read_buf, 0, read_len);
+                try {
+                    S3Object o = amazonS3Client.getObject(AUDIO_BUCKET_NAME, teamId + "/" + projectId + "/" + b.getId() + ".wav");
+                    S3ObjectInputStream s3is = o.getObjectContent();
+                    byte[] read_buf = new byte[1024];
+                    int read_len = 0;
+                    while ((read_len = s3is.read(read_buf)) > 0) {
+                        fos.write(read_buf, 0, read_len);
+                    }
+                    fos.close();
                 }
-                fos.close();
+                catch (AmazonServiceException e) {
+                    System.err.println(e.getErrorMessage());
+                    if(Objects.equals(e.getErrorMessage(), "NoSuchKey")){
+                        continue;
+                    }
+                    else {
+                        System.exit(1);
+                    }
+                }
 
                 String[] cmd = {"sox", projectId + "/temp" + b.getId() + ".wav", projectId + "/interval" + b.getId() + ".wav", "pad", "0", Long.toString(b.getInterval())};
                 ProcessBuilder pb = new ProcessBuilder(cmd);
@@ -133,12 +141,6 @@ public class BlockServiceImpl implements BlockService {
             clip.close();
             amazonS3Client.putObject(AUDIO_BUCKET_NAME, teamId + "/" + projectId + "/0.wav", new File(projectId + "/appended.wav"));
             FileUtils.deleteDirectory(new File(String.valueOf(projectId)));
-        } catch (AmazonServiceException e) {
-            System.err.println(e.getErrorMessage());
-            System.exit(1);
-        } catch (FileNotFoundException e) {
-            System.err.println(e.getMessage());
-            System.exit(1);
         } catch (IOException e) {
             System.err.println(e.getMessage());
             System.exit(1);
