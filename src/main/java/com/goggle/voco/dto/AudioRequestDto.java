@@ -8,9 +8,11 @@ import lombok.*;
 @Data
 public class AudioRequestDto {
 
+    private Long id; //안씀
     private String text;
-    private Long language;
+    private String audioPath; //안씀
     private Long voiceId;
     private Long interval;
-    private Long order;
+    private Long language;
+    private Long order; //안씀
 }

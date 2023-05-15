@@ -2,6 +2,7 @@ package com.goggle.voco.controller;
 
 import com.goggle.voco.domain.User;
 import com.goggle.voco.dto.AudioRequestDto;
+import com.goggle.voco.dto.BlockCreateRequestDto;
 import com.goggle.voco.dto.BlockResponseDto;
 import com.goggle.voco.dto.BlocksResponseDto;
 import com.goggle.voco.service.BlockService;
@@ -27,10 +28,10 @@ public class BlockController {
     @PostMapping("")
     @Operation(summary = "블럭 음성 생성", description = "블럭 음성을 생성한다.")
     public ResponseEntity<BlockResponseDto> createBlock(
-            @RequestBody AudioRequestDto audioRequestDto,
+            @RequestBody BlockCreateRequestDto blockCreateRequestDto,
             @PathVariable("teamId") Long teamId,
             @PathVariable("projectId") Long projectId) {
-        BlockResponseDto blockResponseDto = blockService.createBlock(audioRequestDto, teamId, projectId);
+        BlockResponseDto blockResponseDto = blockService.createBlock(blockCreateRequestDto, teamId, projectId);
 
         return new ResponseEntity<>(blockResponseDto, HttpStatus.CREATED);
     }

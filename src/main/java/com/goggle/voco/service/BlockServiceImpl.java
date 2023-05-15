@@ -55,7 +55,6 @@ public class BlockServiceImpl implements BlockService {
 
     @Override
     public String createAudio(AudioRequestDto audioRequestDto, Long teamId, Long projectId, Long blockId) {
-
         URI uri = UriComponentsBuilder
                 .fromUriString("http://" + AI_ADDRESS + ":" + FLASK_PORT)
                 .path("/tts")
@@ -162,22 +161,14 @@ public class BlockServiceImpl implements BlockService {
     }
 
     @Override
-    public BlockResponseDto createBlock(AudioRequestDto audioRequestDto, Long teamId, Long projectId) {
-        String text = audioRequestDto.getText();
-        Long voiceId = audioRequestDto.getVoiceId();
-        Long interval = audioRequestDto.getInterval();
-        Long order = audioRequestDto.getOrder();
+    public BlockResponseDto createBlock(BlockCreateRequestDto blockCreateRequestDto, Long teamId, Long projectId) {
+        Long voiceId = blockCreateRequestDto.getVoiceId();
+        Long order = blockCreateRequestDto.getOrder();
 
         Project project = projectRepository.findById(projectId).orElseThrow(()-> new NotFoundException(ErrorCode.PROJECT_NOT_FOUND));
-        Block block = new Block(project, text, "", voiceId, interval, order);
+        Block block = new Block(project, "", "", voiceId, 0L, order);
         increaseOrders(projectId, order);
         blockRepository.save(block);
-
-        String audioPath = createAudio(audioRequestDto, teamId, projectId, block.getId());
-        block = blockRepository.findById(block.getId()).orElseThrow(() -> new NotFoundException(ErrorCode.BLOCK_NOT_FOUND));
-        block.setAudioPath(audioPath);
-        blockRepository.save(block);
-        mergeBlocks(teamId, projectId);
 
         return BlockResponseDto.from(block);
     }
@@ -206,12 +197,20 @@ public class BlockServiceImpl implements BlockService {
     public BlockResponseDto updateBlock(AudioRequestDto audioRequestDto, Long teamId, Long projectId, Long blockId) {
         Block block = blockRepository.findById(blockId).orElseThrow(()->new NotFoundException(ErrorCode.BLOCK_NOT_FOUND));
 
-        block.setText(audioRequestDto.getText());
-        block.setAudioPath(createAudio(audioRequestDto, teamId, projectId, blockId));
-        block.setUpdatedAt(LocalDateTime.now());
-        mergeBlocks(teamId, projectId);
+        String text = audioRequestDto.getText();
+        Long voiceId = audioRequestDto.getVoiceId();
+        Long interval = audioRequestDto.getInterval();
 
+        String audioPath = createAudio(audioRequestDto, teamId, projectId, block.getId());
+
+        block.setText(text);
+        block.setVoiceId(voiceId);
+        block.setInterval(interval);
+        block.setAudioPath(audioPath);
+        block.setUpdatedAt(LocalDateTime.now());
         blockRepository.save(block);
+
+        mergeBlocks(teamId, projectId);
 
         return BlockResponseDto.from(block);
     }
