@@ -5,6 +5,7 @@ import com.goggle.voco.global.entity.BaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -26,10 +27,14 @@ public class Project extends BaseEntity {
     @ManyToOne
     private Team team;
 
+    @OneToMany(mappedBy = "project", cascade = {CascadeType.ALL}, orphanRemoval=true)
+    private List<Block> blocks;
+    @OneToMany(mappedBy = "project", cascade = {CascadeType.ALL}, orphanRemoval=true)
+    private List<Bookmark> bookmarks;
+
     public Project(Long language, String title, Team team) {
         this.title = title;
         this.language = language;
         this.team = team;
     }
-
 }
