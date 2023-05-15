@@ -28,8 +28,8 @@ public class AudioController {
             @PathVariable("textId") Long textId,
             @RequestPart MultipartFile audio
     ) throws IOException {
-        audioService.audioInput(userId, textId, audio);
-        return new ResponseEntity<>(HttpStatus.OK);
+        HttpStatus status = audioService.audioInput(userId, textId, audio);
+        return new ResponseEntity<>(status);
     }
 
     @GetMapping("/{textId}")
