@@ -144,10 +144,11 @@ public class BlockServiceImpl implements BlockService {
                         AudioFileFormat.Type.WAVE,
                         new File(projectId + "/appended.wav"));
                 clip.close();
+                //appended.wav AWS에 0.wav로 올리고 /{projectId} 디렉토리 삭제
+                amazonS3Client.putObject(AUDIO_BUCKET_NAME, teamId + "/" + projectId + "/0.wav", new File(projectId + "/appended.wav"));
+                FileUtils.deleteDirectory(new File(String.valueOf(projectId)));
             }
-            //appended.wav AWS에 0.wav로 올리고 /{projectId} 디렉토리 삭제
-            amazonS3Client.putObject(AUDIO_BUCKET_NAME, teamId + "/" + projectId + "/0.wav", new File(projectId + "/appended.wav"));
-            FileUtils.deleteDirectory(new File(String.valueOf(projectId)));
+
         } catch (IOException e) {
             System.err.println(e.getMessage());
             System.exit(1);
