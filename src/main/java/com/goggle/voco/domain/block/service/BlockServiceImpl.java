@@ -99,6 +99,7 @@ public class BlockServiceImpl implements BlockService {
                     System.err.println(e.getErrorMessage());
                     System.err.println(e.getErrorCode());
                     if(Objects.equals(e.getErrorCode(), "NoSuchKey")){
+                        fos.close();
                         continue;
                     }
                     else {
