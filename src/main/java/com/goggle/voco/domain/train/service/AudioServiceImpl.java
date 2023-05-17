@@ -29,7 +29,7 @@ public class AudioServiceImpl implements AudioService {
     private String FLASK_PORT;
 
     @Override
-    public void audioInput(Long userId, Long textId, MultipartFile audio) throws IOException {
+    public HttpStatus audioInput(Long userId, Long textId, MultipartFile audio) throws IOException {
         URI uri = UriComponentsBuilder
                 .fromUriString("http://" + AI_ADDRESS + ":" + FLASK_PORT)
                 .path("/put_data")
@@ -61,6 +61,8 @@ public class AudioServiceImpl implements AudioService {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate
                 .postForEntity(uri, requestEntity, String.class);
+
+        return response.getStatusCode();
 
         /*WebClient client = WebClient.builder()
                 .baseUrl("http://" + AI_ADDRESS + ":" + FLASK_PORT)
