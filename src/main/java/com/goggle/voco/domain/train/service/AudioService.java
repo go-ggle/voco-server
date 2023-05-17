@@ -10,6 +10,6 @@ import java.io.IOException;
 
 public interface AudioService {
     public HttpStatus audioInput(Long userId, Long textId, MultipartFile audio) throws IOException;
-    public Mono<ByteArrayResource> getAudio(Long userId, Long textId);
+    public Mono<ResponseEntity<ByteArrayResource>> getAudio(Long userId, Long textId);
 }
 

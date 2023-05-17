@@ -33,7 +33,7 @@ public class AudioController {
     }
 
     @GetMapping("/{textId}")
-    public Mono<ByteArrayResource> getAudio(
+    public Mono<ResponseEntity<ByteArrayResource>> getAudio(
             @AuthenticationPrincipal Long userId,
             @PathVariable("textId") Long textId
     ) throws IOException {
