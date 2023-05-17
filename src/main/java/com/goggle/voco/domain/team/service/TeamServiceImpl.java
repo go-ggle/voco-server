@@ -6,6 +6,7 @@ import com.goggle.voco.domain.participation.domain.Participation;
 import com.goggle.voco.domain.team.dto.TeamRequestDto;
 import com.goggle.voco.domain.team.dto.TeamResponseDto;
 import com.goggle.voco.domain.user.dto.VoiceResponseDto;
+import com.goggle.voco.exception.DuplicateException;
 import com.goggle.voco.exception.ErrorCode;
 import com.goggle.voco.exception.NotFoundException;
 import com.goggle.voco.domain.team.repository.TeamRepository;
@@ -77,6 +78,10 @@ public class TeamServiceImpl implements TeamService {
     public TeamResponseDto joinTeam(Long userId, String teamCode) {
         User user = userRepository.findById(userId).orElseThrow(()->new NotFoundException(ErrorCode.USER_NOT_FOUND));
         Team team = teamRepository.findByTeamCode(teamCode).orElseThrow(()->new NotFoundException(ErrorCode.TEAM_NOT_FOUND));
+
+        if(participationRepository.existsByUserAndTeam(user, team)) {
+            throw new DuplicateException(ErrorCode.PARICIPATION_CONFLICT);
+        }
 
         Participation participation = new Participation(user, team);
         participationRepository.save(participation);

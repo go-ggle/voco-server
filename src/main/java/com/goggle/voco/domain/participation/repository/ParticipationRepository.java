@@ -26,4 +26,6 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
             + "where p.user.isRegistered = true")
     List<User> findRegisteredUsersByTeamId(Long teamId);
     Participation findByUserIdAndTeamId(Long userId, Long teamId);
+
+    boolean existsByUserAndTeam(User user, Team team);
 }
