@@ -84,10 +84,11 @@ public class BlockServiceImpl implements BlockService {
             List<AudioInputStream> list = new ArrayList<AudioInputStream>();
             new File(String.valueOf(projectId)).mkdirs();
             for (Block b: blocks) {
-                FileOutputStream fos = new FileOutputStream(new File(projectId + "/temp" + b.getId() + ".wav"));
                 try {
+                    //s3에 object가 있을 경우 FileOutputStream 생성하고 {projectId}/temp{blockId}.wav에 저장
                     S3Object o = amazonS3Client.getObject(AUDIO_BUCKET_NAME, teamId + "/" + projectId + "/" + b.getId() + ".wav");
                     S3ObjectInputStream s3is = o.getObjectContent();
+                    FileOutputStream fos = new FileOutputStream(new File(projectId + "/temp" + b.getId() + ".wav"));
                     byte[] read_buf = new byte[1024];
                     int read_len = 0;
                     while ((read_len = s3is.read(read_buf)) > 0) {
@@ -95,11 +96,11 @@ public class BlockServiceImpl implements BlockService {
                     }
                     fos.close();
                 }
+                //s3에 해당 파일이 없는 에러라면 다음 블럭 가져오게 continue함
                 catch (AmazonServiceException e) {
                     System.err.println(e.getErrorMessage());
                     System.err.println(e.getErrorCode());
                     if(Objects.equals(e.getErrorCode(), "NoSuchKey")){
-                        fos.close();
                         continue;
                     }
                     else {
@@ -107,6 +108,7 @@ public class BlockServiceImpl implements BlockService {
                     }
                 }
 
+                //저장한 temp{blockId}.wav에 interval 붙여서 {projectId}/interval{blockId}.wav에 저장
                 String[] cmd = {"sox", projectId + "/temp" + b.getId() + ".wav", projectId + "/interval" + b.getId() + ".wav", "pad", "0", Long.toString(b.getInterval())};
                 ProcessBuilder pb = new ProcessBuilder(cmd);
                 pb.redirectErrorStream(true);
@@ -124,12 +126,13 @@ public class BlockServiceImpl implements BlockService {
                     System.out.println(e.toString());
                     e.printStackTrace();
                 }
-
+                //interval 붙인 파일을 AudioInputStream에 추가함
                 clip = AudioSystem.getAudioInputStream(new File(projectId + "/interval" + b.getId() + ".wav"));
                 list.add(clip);
                 length += clip.getFrameLength();
             }
 
+            //가져온 블럭이 있었다면 다 붙여서 {projectId}/appended.wav에 저장
             if(length>0 && list.size()>0 && clip!=null) {
                 AudioInputStream appendedFiles =
                         new AudioInputStream(
@@ -142,7 +145,7 @@ public class BlockServiceImpl implements BlockService {
                         new File(projectId + "/appended.wav"));
                 clip.close();
             }
-
+            //appended.wav AWS에 0.wav로 올리고 /{projectId} 디렉토리 삭제
             amazonS3Client.putObject(AUDIO_BUCKET_NAME, teamId + "/" + projectId + "/0.wav", new File(projectId + "/appended.wav"));
             FileUtils.deleteDirectory(new File(String.valueOf(projectId)));
         } catch (IOException e) {
