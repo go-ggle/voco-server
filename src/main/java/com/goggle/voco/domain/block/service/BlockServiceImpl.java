@@ -214,12 +214,15 @@ public class BlockServiceImpl implements BlockService {
         Long voiceId = audioRequestDto.getVoiceId();
         Long interval = audioRequestDto.getInterval();
 
-        String audioPath = createAudio(audioRequestDto, teamId, projectId, block.getId());
+        //text가 변한 경우에만 flask로 음성 생성 요청 보냄
+        if(!Objects.equals(text, block.getText())) {
+            String audioPath = createAudio(audioRequestDto, teamId, projectId, block.getId());
+            block.setAudioPath(audioPath);
+        }
 
         block.setText(text);
         block.setVoiceId(voiceId);
         block.setInterval(interval);
-        block.setAudioPath(audioPath);
         block.setUpdatedAt(LocalDateTime.now());
         blockRepository.save(block);
 
