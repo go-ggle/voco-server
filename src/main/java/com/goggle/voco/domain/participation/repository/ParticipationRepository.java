@@ -23,7 +23,7 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
     @Query("select u "
             + "from Participation p "
             + "join p.user u "
-            + "where p.user.isRegistered = true")
+            + "where p.team.id = :teamId and p.user.isRegistered = true")
     List<User> findRegisteredUsersByTeamId(Long teamId);
     Participation findByUserIdAndTeamId(Long userId, Long teamId);
 
