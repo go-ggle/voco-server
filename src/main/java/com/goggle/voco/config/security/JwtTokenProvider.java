@@ -26,7 +26,7 @@ public class JwtTokenProvider {
     private final UserDetailsService userDetailsService;
 
     private String secretKey = "secretKey";
-    private final long tokenValidMillisecond = 1000L * 60 * 5; // 5분
+    private final long tokenValidMillisecond = 1000L * 60 * 60; // 1시간
     private final long refreshTokenValidMillisecond = 1000L * 60 * 60 * 24 * 30; //30일
 
     @PostConstruct
