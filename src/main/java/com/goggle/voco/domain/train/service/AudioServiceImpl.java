@@ -1,7 +1,9 @@
 package com.goggle.voco.domain.train.service;
 
+import com.goggle.voco.exception.CustomException;
 import com.goggle.voco.exception.ErrorCode;
 import com.goggle.voco.exception.NotFoundException;
+import com.google.api.Http;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -93,7 +95,7 @@ public class AudioServiceImpl implements AudioService {
 
 
     @Override
-    public Mono<ByteArrayResource> getAudio(Long userId, Long textId){
+    public Mono<ResponseEntity<ByteArrayResource>> getAudio(Long userId, Long textId){
         WebClient webClient = WebClient.create("http://" + AI_ADDRESS + ":" + FLASK_PORT);
 
         return webClient.get()
@@ -102,12 +104,13 @@ public class AudioServiceImpl implements AudioService {
                         .queryParam("user_id", "{userId}")
                         .queryParam("text_id", "{textId}")
                         .build(userId.intValue(), textId.intValue()))
-                .exchangeToMono(response -> {
-                    if (response.statusCode().equals(HttpStatus.OK))
-                        return response.bodyToMono(ByteArrayResource.class);
-                    if (response.statusCode().equals(HttpStatus.NOT_FOUND))
-                        throw new NotFoundException(ErrorCode.AUDIO_NOT_FOUND);
-                    return null;
-                });
+                .retrieve()
+                .onStatus(HttpStatus::is4xxClientError, response ->
+                        Mono.error(new NotFoundException(ErrorCode.AUDIO_NOT_FOUND))
+                )
+                .onStatus(HttpStatus::is5xxServerError, response ->
+                        Mono.error(new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "플라스크 에러"))
+                )
+                .toEntity(ByteArrayResource.class);
     }
 }
