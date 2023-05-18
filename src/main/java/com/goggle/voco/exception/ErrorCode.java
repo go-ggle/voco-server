@@ -23,7 +23,8 @@ public enum ErrorCode {
     AUDIO_NOT_FOUND(HttpStatus.NOT_FOUND, "저장된 음성이 없습니다."),
 
     //409 CONFLICT
-    PARICIPATION_CONFLICT(HttpStatus.CONFLICT, "이미 참여한 팀입니다.");
+    PARICIPATION_CONFLICT(HttpStatus.CONFLICT, "이미 참여한 팀입니다."),
+    EMAIL_CONFLICT(HttpStatus.CONFLICT, "이미 가입된 이메일입니다..");
 
     private final HttpStatus httpStatus;
     private final String message;

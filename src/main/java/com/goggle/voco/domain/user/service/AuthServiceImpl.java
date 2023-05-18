@@ -5,6 +5,7 @@ import com.goggle.voco.domain.participation.domain.Participation;
 import com.goggle.voco.domain.team.domain.Team;
 import com.goggle.voco.domain.user.domain.User;
 import com.goggle.voco.domain.user.dto.*;
+import com.goggle.voco.exception.DuplicateException;
 import com.goggle.voco.exception.ErrorCode;
 import com.goggle.voco.exception.NotFoundException;
 import com.goggle.voco.exception.UnauthorizedException;
@@ -29,6 +30,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public UserResponseDto createUser(UserRequestDto userRequestDto) {
+        if(userRepository.existsByEmail(userRequestDto.getEmail())) {
+            throw new DuplicateException(ErrorCode.EMAIL_CONFLICT);
+        }
+
         String password = passwordEncoder.encode(userRequestDto.getPassword());
 
         User user = User.builder()
