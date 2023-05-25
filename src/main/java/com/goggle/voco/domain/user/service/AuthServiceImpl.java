@@ -88,8 +88,12 @@ public class AuthServiceImpl implements AuthService {
             throw new UnauthorizedException(ErrorCode.INVALID_AUTH_TOKEN);
         }
 
-        String accessToken = jwtTokenProvider.createToken(String.valueOf(user.getId()));
+        String newAccessToken = jwtTokenProvider.createToken(String.valueOf(user.getId()));
+        String newRefreshToken = jwtTokenProvider.createRefreshToken(String.valueOf(user.getId()));
 
-        return new TokenRenewResponseDto(accessToken);
+        user.setRefreshToken(newRefreshToken);
+        userRepository.save(user);
+
+        return new TokenRenewResponseDto(newAccessToken, newRefreshToken);
     }
 }
