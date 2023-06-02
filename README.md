@@ -1,8 +1,10 @@
-# VOCO
+# 원하는 발음으로, 내가 말하는 듯한 외국어 더빙 VOCO
 >  캡스톤디자인과창업프로젝트 14팀 고글 <br>
->  프로젝트 기간 2022.09 - 2023.06
+>  프로젝트 기간 2022.09 - 2023.06 <br>
 
-<br>
+<img src="https://github.com/go-ggle/voco-server/assets/81256252/a5487eec-b7d7-454b-b81f-4e532b4cff88" width="550"/>
+
+<br><br>
 
 ## 🎙 서비스 소개
 VOCO는 콘텐츠 제작자의 해외 시청자 유입을 돕기 위해 음성 변환 기술을 이용하여 사용자의 목소리로 만들어진 외국어 더빙을 제공합니다.
@@ -37,7 +39,7 @@ VOCO는 콘텐츠 제작자의 해외 시청자 유입을 돕기 위해 음성 �
 <br><br>
 
 ## 🖊 ERD
-<img width="550" alt="스크린샷 2023-06-02 15 19 52" src="https://github.com/go-ggle/voco-server/assets/81256252/a8447145-ba6b-4023-9a29-e8e1e05b46fc">
+<img width="700" alt="스크린샷 2023-06-02 15 19 52" src="https://github.com/go-ggle/voco-server/assets/81256252/a8447145-ba6b-4023-9a29-e8e1e05b46fc">
 
 <br><br>
 
