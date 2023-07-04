@@ -46,5 +46,5 @@ VOCO는 콘텐츠 제작자의 해외 시청자 유입을 돕기 위해 음성 �
 ## 👯 팀 소개
 | <img src="https://avatars.githubusercontent.com/doyeoo" width="150">|<img src="https://avatars.githubusercontent.com/aqswa" width="150">|<img src="https://avatars.githubusercontent.com/Minjungh63" width="150">|
 | :-----------------------------------: | :-----------------------------------: | :-----------------------------------: |
-| [ 김도연 ](https://github.com/doyeoo) | [ 조현영 ](https://github.com/aqswa) | [ 정민정 ](https://github.com/minjungJ) |
+| [ 김도연 ](https://github.com/doyeoo) | [ 조현영 ](https://github.com/aqswa) | [ 정민정 ](https://github.com/JAI-jung) |
 | 서버 | 서버 | 안드로이드 |
